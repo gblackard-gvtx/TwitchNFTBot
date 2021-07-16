@@ -1,0 +1,15 @@
+{
+  "name": "twitchbot",
+  "version": "1.0.0",
+  "description": "This bot will give live Aution data from raribles to content creators viewers",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "tmi.js": "^1.8.3"
+  }
+}
