@@ -1,5 +1,6 @@
 require('dotenv').config()
 const tmi = require('tmi.js');
+const fetch = require("node-fetch");
 
 const client = new tmi.Client({
 	options: { debug: true },
@@ -27,12 +28,13 @@ client.on('message', (channel, tags, message, self) => {
 
     }
 	if (message.toLocaleLowerCase()=== '!clip') {
-		const userAction = async () => {
-			const response = await fetch('https://usr9herp2j.execute-api.us-east-2.amazonaws.com/default/NFTClipTwitch%27');
-			const myJson = await response.json(); //extract JSON from the http response
-		   console.log(myJson);
-		  }
-	
+		const AWSEndpointCall = async () => {
+			const response = await fetch('https://usr9herp2j.execute-api.us-east-2.amazonaws.com/default/NFTClipTwitch');
+			const myJson = await response.json(); //extract JSON from the http response}
+			client.say(channel, `@${tags.username}, ${JSON.stringify(myJson)}`);
+		}
+		AWSEndpointCall();
+		
 	}
 });
 
