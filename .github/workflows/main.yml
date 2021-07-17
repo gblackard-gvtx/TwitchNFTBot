@@ -1,0 +1,2 @@
+- name: AWS Lambda Deploy
+  uses: appleboy/lambda-action@v0.1.3
