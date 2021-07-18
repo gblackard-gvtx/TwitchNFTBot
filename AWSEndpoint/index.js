@@ -7,15 +7,13 @@ const https = require("https");
 const APP_CLIENT_ID = "";
 const APP_CLIENT_SECRET = "";
 const APP_REFRESH_TOKEN = "";
-const DISCORD_WEBHOOK_ID = "";
-const DISCORD_WEBHOOK_TOKEN = "";
 const CHANNEL_BROADCAST_ID = "";
 const DELAY_TO_POST_TO_DISCORD = 4 * 1000; // Twitch needs time to create the clip, so this defines how long time in ms until a message is posted to Discord
 
 
 const POST_MESSAGE_TWITCH_CHAT = (discordUrl, raribleUrl) => {
     // It is possible to use channel emotes here, but the bot needs to be a subscriber
-    if (raribleUrl) {
+    if (raribleUrl.length > 0) {
         return "The clip can be viewed at " + discordUrl + " and it can be purchased at " + raribleUrl;
     }
     return "The clip can be found at " + discordUrl;
@@ -180,18 +178,20 @@ async function main(username, rarible) {
 
         return "Unexpected problem when creating the clip.";
     }
+
     let raribleUrl = '';
-    try {
-        // TODO: Below.
-        // Return the URL to the chat of the clip.
-        // Also if Rarible is true then upload it to Rarible.
-    } catch (error) {
-        console.error("problem-sending-to-discord", error);
-        return "Unexpected problem when posting to Discord.";
+    if (rarible) {
+        try {
+            // TODO: Upload to Rarible and save the url to raribleUrl
+
+        } catch (error) {
+            console.error("problem-sending-to-discord", error);
+            return "Unexpected problem when posting to Discord.";
+        }
     }
 
     try {
-        const messageWeb = POST_MESSAGE_TWITCH_CHAT(responseClipURL,);
+        const messageWeb = POST_MESSAGE_TWITCH_CHAT(responseClipURL, raribleUrl);
         return messageWeb;
     } catch (error) {
         console.error("problem-getting-twitch-chat-response", error);
@@ -210,7 +210,7 @@ exports.handler = async (event) => {
     console.log("username", username);
     console.log("rarible", rarible);
 
-    //const message = await main(username);
+    const message = await main(username, rarible);
 
     const response = {
         statusCode: 200,
