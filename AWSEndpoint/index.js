@@ -155,6 +155,8 @@ async function main(username, rarible) {
         const clipID = response.clipID;
         responseClipURL = response.clipURL;
 
+        // TODO: update the below logic so it is not needed and we await the actual needed amount of time versus an arbitrary number.
+
         await wait(DELAY_TO_POST_TO_DISCORD);
 
     } catch (error) {
