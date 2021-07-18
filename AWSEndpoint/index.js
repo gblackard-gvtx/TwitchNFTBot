@@ -136,12 +136,23 @@ function wait(time) {
         }, time);
     });
 }
-
+// Documentation for the API can be found at https://api-reference.rarible.com/#tag/lazy-mint-controller
+// The following is the Staging Rinkeby Env
+// https://api-staging.rarible.com/protocol/v0.1/ethereum/nft/mints
+async function createRariableNFT(postURL) {
+    const response = await doRequest(
+        "POST",
+        "api-staging.rarible.com",
+        "protocol/v0.1/ethereum/nft/mints",
+        undefined,
+        undefined
+    );
+    // The above will return a token ID and that is how we will get the URL.
+}
 async function main(username, rarible) {
 
     let accessToken;
     let responseClipURL;
-    let messageDiscord;
 
     try {
         accessToken = await getRefreshedAccessToken();
@@ -186,8 +197,8 @@ async function main(username, rarible) {
     let raribleUrl = '';
     if (rarible) {
         try {
-            // TODO: Upload to Rarible and save the url to raribleUrl
-
+            // TODO: Upload to Rarible and update raribleUrl with the url
+            await createRariableNFT();
         } catch (error) {
             console.error("problem-sending-to-discord", error);
             return "Unexpected problem when posting to Discord.";
