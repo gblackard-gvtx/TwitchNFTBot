@@ -1,4 +1,4 @@
-// The url for the AWS Endpoint is currently https://usr9herp2j.execute-api.us-east-2.amazonaws.com/default/NFTClipTwitch
+// The url for the AWS Endpoint is currently https://167u5tt2o0.execute-api.us-east-2.amazonaws.com/default/Endpoint
 exports.handler = async (event) => {
     // TODO implement
     const response = {
