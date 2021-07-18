@@ -11,8 +11,8 @@ const CHANNEL_BROADCAST_ID = "";
 const DELAY_TO_POST_TO_DISCORD = 4 * 1000; // Twitch needs time to create the clip, so this defines how long time in ms until a message is posted to Discord
 
 
+// The following code generates a response to be posted within the Twitch Chat depending on if Rarible was requested and used.
 const POST_MESSAGE_TWITCH_CHAT = (discordUrl, raribleUrl) => {
-    // It is possible to use channel emotes here, but the bot needs to be a subscriber
     if (raribleUrl.length > 0) {
         return "The clip can be viewed at " + discordUrl + " and it can be purchased at " + raribleUrl;
     }
@@ -23,7 +23,7 @@ const POST_MESSAGE_TWITCH_CHAT = (discordUrl, raribleUrl) => {
 const ERROR_TYPE_TWITCH_CHANNEL_OFFLINE = 1;
 
 async function getRefreshedAccessToken() {
-
+    // Post request to Twitch to get the new access token
     const response = await doRequest(
         "POST",
         "id.twitch.tv",
@@ -38,6 +38,7 @@ async function getRefreshedAccessToken() {
 }
 
 async function createTwitchClip(accessToken) {
+    // Send a request to the Twitch Clip API to get a clip recorded
 
     try {
 
@@ -54,7 +55,7 @@ async function createTwitchClip(accessToken) {
 
         const json = JSON.parse(response);
         console.log("create-twitch-clip-json", json);
-
+        // Extract Data about the clip on Twitch from the JSON response to the POST Request.
         const clipData = json.data[0];
         const clipID = clipData.id;
         const clipURL = "https://clips.twitch.tv/" + clipID;
@@ -125,6 +126,7 @@ function doRequest(method, hostname, path, postData, headers) {
 
 }
 
+// Delay code a certain number of milliseconds
 function wait(time) {
     console.log("waiting");
     return new Promise((resolve, reject) => {
