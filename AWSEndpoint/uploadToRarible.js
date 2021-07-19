@@ -7,7 +7,7 @@ const pinFileToIPFS = async (pinataApiKey, pinataSecretApiKey) => {
     const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
     let data = new FormData();
 
-    data.append("file", fs.createReadStream("./1Dot5TestingVideo.mp4"));
+    data.append("file", fs.createReadStream("./assets/1Dot5TestingVideo.mp4"));
     console.log(data);
     return await axios.post(url, data, {
         headers: {
@@ -22,7 +22,7 @@ const pinFileToIPFS = async (pinataApiKey, pinataSecretApiKey) => {
         })
         .catch(function (error) {
             console.log('failed');
-            console.log(error)
+            console.log(error.toJSON())
         });
 };
 pinFileToIPFS(process.env.PINATA_KEY, process.env.PINATA_SECRET);
