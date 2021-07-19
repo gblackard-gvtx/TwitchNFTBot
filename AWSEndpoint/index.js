@@ -140,6 +140,8 @@ function wait(time) {
 // The following is the Staging Rinkeby Env
 // https://api-staging.rarible.com/protocol/v0.1/ethereum/nft/mints
 async function createRariableNFT(postURL) {
+    // TODO: update below with the needed payload.
+    // The first undefined is the payload.
     const response = await doRequest(
         "POST",
         "api-staging.rarible.com",
@@ -148,6 +150,7 @@ async function createRariableNFT(postURL) {
         undefined
     );
     // The above will return a token ID and that is how we will get the URL.
+    return 'google.com'
 }
 async function main(username, rarible) {
 
