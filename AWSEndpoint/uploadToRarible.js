@@ -32,7 +32,9 @@ const pinFileToIPFS = async (pinataApiKey, pinataSecretApiKey, filePath) => {
         }
     });
     data.append('pinataOptions', pinataOptions);
-    return await axios.post(url, data, {
+    let IpfsHash = "";
+
+    await axios.post(url, data, {
         maxBodyLength: 'Infinity', //this is needed to prevent axios from erroring out with large files
         headers: {
             'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
@@ -43,12 +45,19 @@ const pinFileToIPFS = async (pinataApiKey, pinataSecretApiKey, filePath) => {
         .then(function (response) {
             console.log(
                 response.data);
+            console.log(IpfsHash);
+            IpfsHash = response.data.IpfsHash;
 
         })
         .catch(function (error) {
             console.log(error.toJSON())
+            IpfsHash = 'Failed';
         });
+    return IpfsHash;
 };
 
+async function uploadFileAndGetIPFS() {
+    console.log((await pinFileToIPFS(process.env.PINATA_KEY, process.env.PINATA_SECRET, "./assets/TestingVideo.mp4")).toString());
+}
 
-pinFileToIPFS(process.env.PINATA_KEY, process.env.PINATA_SECRET, "./assets/TestingVideo.mp4");
+uploadFileAndGetIPFS();
