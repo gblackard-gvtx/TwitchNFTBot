@@ -3,6 +3,7 @@ const fs = require("fs");
 const FormData = require("form-data");
 const { url } = require("inspector");
 const fetch = require("node-fetch");
+var Web3 = require('web3');
 
 require('dotenv').config()
 
@@ -83,12 +84,93 @@ function generateLazyMintRequestBody(tokenId, contractAddress, IpfsHash, creator
     };
     return body;
 }
+function generateTypedDataStructure(tokenId, contractAddress, IpfsHash, creatorAddress) {
+    let ds = {
+        "types": {
+            "EIP712Domain": [
+                {
+                    type: "string",
+                    name: "name",
+                },
+                {
+                    type: "string",
+                    name: "version",
+                },
+                {
+                    type: "uint256",
+                    name: "chainId",
+                },
+                {
+                    type: "address",
+                    name: "verifyingContract",
+                }
+            ],
+            "Mint721": [
+                { name: "tokenId", type: "uint256" },
+                { name: "tokenURI", type: "string" },
+                { name: "creators", type: "Part[]" },
+                { name: "royalties", type: "Part[]" }
+            ],
+            "Part": [
+                { name: "account", type: "address" },
+                { name: "value", type: "uint96" }
+            ]
+        },
+        "domain": {
+            name: "Mint721",
+            version: "1",
+            chainId: 3,
+            verifyingContract: contractAddress
+        },
+        "primaryType": "Mint721",
+        "message": {
+            "@type": "ERC721",
+            "contract": contractAddress,
+            "tokenId": tokenId,
+            "tokenURI": `/ipfs/${IpfsHash}`,
+
+            "uri": `/ipfs/${IpfsHash}`,
+            "creators": [
+                {
+                    account: creatorAddress,
+                    value: "10000"
+                }
+            ],
+            "royalties": [
+                {
+                    account:
+                        creatorAddress,
+                    value: 2000
+                }
+            ],
+        }
+    };
+    return ds;
+}
+async function signTypedData(web3Provider, from, dataStructure) {
+    const msgData = JSON.stringify(dataStructure);
+    const signature = await web3Provider.send("eth_signTypedData_v4", [from, msgData]);
+    const sig0 = sig.substring(2);
+    const r = "0x" + sig0.substring(0, 64);
+    const s = "0x" + sig0.substring(64, 128);
+    const v = parseInt(sig0.substring(128, 130), 16);
+    return {
+        dataStructure,
+        signature,
+        v,
+        r,
+        s,
+    };
+}
 async function uploadAndMintAFile(userAddress, username, gameTitle) {
     // Rinkeby ERC721 Contract Address is 0x6ede7f3c26975aad32a475e1021d8f6f39c89d82
     let contractAddress = '0x6ede7f3c26975aad32a475e1021d8f6f39c89d82';
     let hash = await pinFileToIPFS(process.env.PINATA_KEY, process.env.PINATA_SECRET, "./assets/3MBTestingVideo.mp4");
     let tokenId = await generateTokenId(contractAddress, userAddress);
     let LazyMintRequestBody = generateLazyMintRequestBody(tokenId, contractAddress, hash, userAddress);
+    let typedDataStructure = generateTypedDataStructure(tokenId, contractAddress);
+    let signature = signTypedData(Web3, userAddress, typedDataStructure);
+    console.log(signature);
     console.log(genereatedRaribleURL.tokenId);
 
 
