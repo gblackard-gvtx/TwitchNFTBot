@@ -3,10 +3,23 @@ const fs = require("fs");
 const FormData = require("form-data");
 const { url } = require("inspector");
 const fetch = require("node-fetch");
-var Web3 = require('web3');
+const ethers = require('ethers')
+const TypedDataUtils = require('ethers-eip712');
+const { type } = require("os");
+const privateUtil = require("ethereumjs-util");
+const signTypedData_v4 = require("eth-sig-util");
+const { sign } = require("crypto");
 
 require('dotenv').config()
 
+async function getWallet() {
+    let json = JSON.stringify(
+        { "version": 3, "id": "6912a15b-c2b1-452b-a93c-bdedbace7841", "address": "afa4f9a3ff1c73f64bea02cdc74fdd7f89d91822", "crypto": { "ciphertext": "6340d22c68f11bb755edcfe79bb813f03e8b5738c666ed91311637bec3348d7e", "cipherparams": { "iv": "00bc7bc1afb65bdb11b326bb4f2b9846" }, "cipher": "aes-128-ctr", "kdf": "scrypt", "kdfparams": { "dklen": 32, "salt": "18ac28d5b7e6ad4fb059eba905b87c4b1b768a84c4f5620fa62f2b15ca7f2b27", "n": 262144, "r": 8, "p": 1 }, "mac": "54c7178968e3c8d5d321d5746006dae1774505a64664d1c98dee26e2d9e4719d" } });
+    let password = "pass";
+    let wallet = await ethers.Wallet.fromEncryptedJson(json, password)
+    console.log(wallet.address);
+    return wallet;
+}
 const pinFileToIPFS = async (pinataApiKey, pinataSecretApiKey, filePath) => {
     const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
     let data = new FormData();
@@ -63,31 +76,28 @@ async function generateTokenId(ContractAddress, userAddress) {
 
 
 }
-function generateLazyMintRequestBody(tokenId, contractAddress, IpfsHash, creatorAddress) {
+function generatelazyMintRequestBody(tokenId, contractAddress, IpfsHash, creatorAddress) {
     let body = {
         "@type": "ERC721",
-        "contract": contractAddress,
-        "tokenId": tokenId,
-        "uri": `/ipfs/${IpfsHash}`,
-        "creators": [
+        contract: contractAddress,
+        tokenId: tokenId,
+        uri: `/ipfs/${IpfsHash}`,
+        creators: [
             {
-                account: contractAddress,
+                account: creatorAddress,
                 value: "10000"
             }
         ],
-        "royalties": [
-            {
-                account: contractAddress,
-                value: 2000
-            }
+        royalties: [
         ],
     };
     return body;
 }
-function generateTypedDataStructure(tokenId, contractAddress, IpfsHash, creatorAddress) {
+function generateTypedDataStructure(contractAddress, body) {
+
     let ds = {
-        "types": {
-            "EIP712Domain": [
+        types: {
+            EIP712Domain: [
                 {
                     type: "string",
                     name: "name",
@@ -105,80 +115,72 @@ function generateTypedDataStructure(tokenId, contractAddress, IpfsHash, creatorA
                     name: "verifyingContract",
                 }
             ],
-            "Mint721": [
+            Mint721: [
                 { name: "tokenId", type: "uint256" },
-                { name: "tokenURI", type: "string" },
+                { name: "uri", type: "string" },
                 { name: "creators", type: "Part[]" },
                 { name: "royalties", type: "Part[]" }
             ],
-            "Part": [
+            Part: [
                 { name: "account", type: "address" },
                 { name: "value", type: "uint96" }
             ]
         },
-        "domain": {
+        domain: {
             name: "Mint721",
-            version: "1",
+            version: "3",
             chainId: 3,
             verifyingContract: contractAddress
         },
-        "primaryType": "Mint721",
-        "message": {
-            "@type": "ERC721",
-            "contract": contractAddress,
-            "tokenId": tokenId,
-            "tokenURI": `/ipfs/${IpfsHash}`,
+        primaryType: "Mint721",
+        message: body
 
-            "uri": `/ipfs/${IpfsHash}`,
-            "creators": [
-                {
-                    account: creatorAddress,
-                    value: "10000"
-                }
-            ],
-            "royalties": [
-                {
-                    account:
-                        creatorAddress,
-                    value: 2000
-                }
-            ],
-        }
     };
     return ds;
 }
-async function signTypedData(web3Provider, from, dataStructure) {
-    const msgData = JSON.stringify(dataStructure);
-    const signature = await web3Provider.send("eth_signTypedData_v4", [from, msgData]);
-    const sig0 = sig.substring(2);
-    const r = "0x" + sig0.substring(0, 64);
-    const s = "0x" + sig0.substring(64, 128);
-    const v = parseInt(sig0.substring(128, 130), 16);
-    return {
-        dataStructure,
-        signature,
-        v,
-        r,
-        s,
-    };
+function extractAddress(privateKey) {
+    return `0x${privateUtil.privateToAddress(Buffer.from(privateKey, "hex")).toString("hex")}`
+}
+async function signTypedData(walletPrivateKey, dataStructure, wallet) {
+
+    const digest = TypedDataUtils.TypedDataUtils.encodeDigest(dataStructure)
+    console.log(digest);
+    const signature = await wallet.signMessage(digest)
+    console.log(signature);
+    return signature;
+}
+async function uploadToRarible(lazyMintRequestBody, signature) {
+    lazyMintRequestBody.signatures = [signature];
+    console.log(lazyMintRequestBody);
+    axios.post('https://api-dev.rarible.com/protocol/v0.1/ethereum/nft/mints', lazyMintRequestBody)
+        .then(function (response) {
+            console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 }
 async function uploadAndMintAFile(userAddress, username, gameTitle) {
     // Rinkeby ERC721 Contract Address is 0x6ede7f3c26975aad32a475e1021d8f6f39c89d82
     let contractAddress = '0x6ede7f3c26975aad32a475e1021d8f6f39c89d82';
     let hash = await pinFileToIPFS(process.env.PINATA_KEY, process.env.PINATA_SECRET, "./assets/3MBTestingVideo.mp4");
     let tokenId = await generateTokenId(contractAddress, userAddress);
-    let LazyMintRequestBody = generateLazyMintRequestBody(tokenId, contractAddress, hash, userAddress);
-    let typedDataStructure = generateTypedDataStructure(tokenId, contractAddress);
-    let signature = signTypedData(Web3, userAddress, typedDataStructure);
+    let lazyMintRequestBody = generatelazyMintRequestBody(tokenId, contractAddress, hash, userAddress);
+    console.log(lazyMintRequestBody);
+    let typedDataStructure = generateTypedDataStructure(contractAddress, lazyMintRequestBody);
+    console.log(lazyMintRequestBody);
+    console.log(typedDataStructure);
+    console.log(typedDataStructure.message);
+    let wallet = await getWallet();
+    let signature = await signTypedData(process.env.TORUS_WALLET_PRIVATE_KEY, typedDataStructure, wallet);
     console.log(signature);
-    console.log(genereatedRaribleURL.tokenId);
-
+    await uploadToRarible(lazyMintRequestBody, signature);
 
     let metaData = {
         "name": `${username} recording at ${Date.now().toString()}`,
         "description": `A recording of ${username} playing ${gameTitle} at ${Date.now().toString()}`,
         "image": `ipfs://ipfs/${hash}`,
-        "external_url": genereatedRaribleURL /* This is the link to Rarible which we currently don't have, we can fill this in shortly */,
+        "external_url": 'tmep' /* This is the link to Rarible which we currently don't have, we can fill this in shortly */,
         "animation_url": '?here'/* IPFS Hash just as image field, but it allows every type of multimedia files. Like mp3, mp4 etc */,
         // the below section is not needed.
         "attributes": [
