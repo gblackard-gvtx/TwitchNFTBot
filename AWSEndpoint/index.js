@@ -5,21 +5,21 @@ const axios = require('axios');
  * Please add all the necessary values below
  * --------------------------------------------------
  */
-const APP_CLIENT_ID = process.env.CLIENT;
-const APP_CLIENT_SECRET = process.env.SECRET;
-const APP_REFRESH_TOKEN = process.env.REFRESH;
-const CHANNEL_BROADCAST_ID = process.env.BROADCASTID;
-const DELAY_TO_POST_TO_RARIBLE = 4 * 1000; // Twitch needs time to create the clip, so this defines how long time in ms until a message is posted to Discord
-const POST_MESSAGE_TWITCH_CHAT = () => {
+const APP_CLIENT_ID = "";
+const APP_CLIENT_SECRET = "";
+const APP_REFRESH_TOKEN = "";
+const CHANNEL_BROADCAST_ID = "";
+const DELAY_TO_POST_TO_DISCORD = 4 * 1000; // Twitch needs time to create the clip, so this defines how long time in ms until a message is posted to Discord
+
+
+const POST_MESSAGE_TWITCH_CHAT = (discordUrl, raribleUrl) => {
     // It is possible to use channel emotes here, but the bot needs to be a subscriber
-    return "A new clip was created in the Discord server! :)";
+    if (raribleUrl.length > 0) {
+        return "The clip can be viewed at " + discordUrl + " and it can be purchased at " + raribleUrl;
+    }
+    return "The clip can be found at " + discordUrl;
 };
-const POST_MESSAGE_DISCORD = ( username, clipURL ) => {
-    return "A new clip was created" + (username ? " by @" + username : "") + "! :)\n\n" + clipURL;
-};
-/*
- * --------------------------------------------------
- */
+
 
 const ERROR_TYPE_TWITCH_CHANNEL_OFFLINE = 1;
 
@@ -38,7 +38,7 @@ async function getRefreshedAccessToken() {
 
 }
 
-async function createTwitchClip( accessToken ) {
+async function createTwitchClip(accessToken) {
 
     try {
 
@@ -67,9 +67,9 @@ async function createTwitchClip( accessToken ) {
             clipURL,
         };
 
-    } catch( error ) {
+    } catch (error) {
 
-        if( typeof error === "string" && error.indexOf("Clipping is not possible for an offline channel.") !== -1 ) {
+        if (typeof error === "string" && error.indexOf("Clipping is not possible for an offline channel.") !== -1) {
             const newError = new Error("Someone tried to clip while the channel is offline :ugh:");
             newError.type = ERROR_TYPE_TWITCH_CHANNEL_OFFLINE;
             throw newError;
@@ -81,28 +81,8 @@ async function createTwitchClip( accessToken ) {
 
 }
 
-async function sendToDiscord( message ) {
-
-    const postData = JSON.stringify({
-        "content": message,
-    });
-
-    const path = "/api/webhooks/" + DISCORD_WEBHOOK_ID + "/" + DISCORD_WEBHOOK_TOKEN;
-
-    await doRequest(
-        "POST",
-        "discordapp.com",
-        path,
-        postData,
-        {
-            "Content-Type": "application/json",
-        }
-    );
-
-}
-
-function doRequest( method, hostname, path, postData, headers ) {
-    return new Promise(( resolve, reject ) => {
+function doRequest(method, hostname, path, postData, headers) {
+    return new Promise((resolve, reject) => {
 
         const options = {
             method,
@@ -112,18 +92,18 @@ function doRequest( method, hostname, path, postData, headers ) {
             headers,
         };
 
-        const request = https.request(options, ( response ) => {
+        const request = https.request(options, (response) => {
 
             response.setEncoding("utf8");
             let returnData = "";
 
-            response.on("data", ( chunk ) => {
+            response.on("data", (chunk) => {
                 returnData += chunk;
             });
 
             response.on("end", () => {
 
-                if( response.statusCode < 200 || response.statusCode >= 300 ) {
+                if (response.statusCode < 200 || response.statusCode >= 300) {
                     reject(returnData);
                 } else {
                     resolve(returnData);
@@ -131,13 +111,13 @@ function doRequest( method, hostname, path, postData, headers ) {
 
             });
 
-            response.on("error", ( error ) => {
+            response.on("error", (error) => {
                 reject(error);
             });
 
         });
 
-        if( postData ) {
+        if (postData) {
             request.write(postData);
         }
 
@@ -146,9 +126,9 @@ function doRequest( method, hostname, path, postData, headers ) {
 
 }
 
-function wait( time ) {
+function wait(time) {
     console.log("waiting");
-    return new Promise(( resolve, reject ) => {
+    return new Promise((resolve, reject) => {
         setTimeout(() => {
             console.log("wait done");
             resolve();
@@ -156,7 +136,7 @@ function wait( time ) {
     });
 }
 
-async function main( username ) {
+async function main(username, rarible) {
 
     let accessToken;
     let responseClipURL;
@@ -164,7 +144,7 @@ async function main( username ) {
 
     try {
         accessToken = await getRefreshedAccessToken();
-    } catch( error ) {
+    } catch (error) {
         console.error("problem-fetching-access-token", error);
         return "Unexpected problem when fetching the access token.";
     }
@@ -176,54 +156,64 @@ async function main( username ) {
         const clipID = response.clipID;
         responseClipURL = response.clipURL;
 
+        // TODO: update the below logic so it is not needed and we await the actual needed amount of time versus an arbitrary number.
+
         await wait(DELAY_TO_POST_TO_DISCORD);
 
-    } catch( error ) {
+    } catch (error) {
 
         console.error("problem-creating-clip", error);
 
-        if( typeof error === "string" && error.indexOf("{") === 0 ) {
+        if (typeof error === "string" && error.indexOf("{") === 0) {
 
             error = JSON.parse(error);
 
             // Twitch broke =(
-            if( error.error === "Service Unavailable" && error.status === 503 ) {
+            if (error.error === "Service Unavailable" && error.status === 503) {
                 return "Twitch API didn't want to create a clip right now, you need to manually create the clip :(";
             }
 
         }
 
-        if( error.type === ERROR_TYPE_TWITCH_CHANNEL_OFFLINE ) {
+        if (error.type === ERROR_TYPE_TWITCH_CHANNEL_OFFLINE) {
             return "I can't clip while the channel is offline :(";
         }
 
         return "Unexpected problem when creating the clip.";
     }
 
-    try {
-        messageDiscord = POST_MESSAGE_DISCORD(username, responseClipURL);
-        await sendToDiscord(messageDiscord);
-    } catch( error ) {
-        console.error("problem-sending-to-discord", error);
-        return "Unexpected problem when posting to Discord.";
+    let raribleUrl = '';
+    if (rarible) {
+        try {
+            // TODO: Upload to Rarible and save the url to raribleUrl
+
+        } catch (error) {
+            console.error("problem-sending-to-discord", error);
+            return "Unexpected problem when posting to Discord.";
+        }
     }
 
     try {
-        const messageWeb = POST_MESSAGE_TWITCH_CHAT();
+        const messageWeb = POST_MESSAGE_TWITCH_CHAT(responseClipURL, raribleUrl);
         return messageWeb;
-    } catch( error ) {
+    } catch (error) {
         console.error("problem-getting-twitch-chat-response", error);
         return "Unexpected problem getting response to Twitch chat";
     }
 
 }
 
-exports.handler = async ( event ) => {
+exports.handler = async (event) => {
 
     const username = event["queryStringParameters"] && event["queryStringParameters"]["user"];
+    var rarible = event["queryStringParameters"] && event["queryStringParameters"]["rarible"];
+    if (rarible == 'true') {
+        rarible = true;
+    }
     console.log("username", username);
+    console.log("rarible", rarible);
 
-    const message = await main(username);
+    const message = await main(username, rarible);
 
     const response = {
         statusCode: 200,
