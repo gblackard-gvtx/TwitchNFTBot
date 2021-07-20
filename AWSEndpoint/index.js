@@ -1,3 +1,5 @@
+require('dotenv').config()
+const axios = require('axios');
 // The url for the AWS Endpoint is currently https://167u5tt2o0.execute-api.us-east-2.amazonaws.com/default/Endpoint
 /*
  * Please add all the necessary values below

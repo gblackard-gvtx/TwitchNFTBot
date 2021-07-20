@@ -13,26 +13,11 @@ const fetch = require('node-fetch');
 
 client.connect();
 */
-async function getRefreshedAccessToken() {
-	const refreshToken = process.env.REFRESH;
-	const clientId = process.env.CLIENT;
-	const secret = process.env.SECRET;
-	const response = await fetch(`https://id.twitch.tv/oauth2/token?grant_type=refresh_token&refresh_token=${refreshToken}&client_id=${clientId}&client_secret=${secret}`, {
-		method: 'post'
-	});
-	const data = await response.json();
-	console.log(data);
-}
 
-const main = async () => {
-	let accessToken;
-	let responseClipURL;
-	let clipId;
-	try {
-		getRefreshedAccessToken();
-	} catch (error) {
-		console.error("problem-fetching-access-token", error);
-		return "Unexpected problem when fetching the access token.";
-	}
-}
-main();
+const APP_CLIENT_ID = process.env.CLIENT;
+const APP_CLIENT_SECRET = process.env.SECRET;
+const APP_REFRESH_TOKEN = process.env.REFRESH;
+const CHANNEL_BROADCAST_ID = process.env.BROADCASTID;
+console.log(APP_CLIENT_ID)
+console.log(APP_CLIENT_SECRET)
+console.log(APP_REFRESH_TOKEN)
