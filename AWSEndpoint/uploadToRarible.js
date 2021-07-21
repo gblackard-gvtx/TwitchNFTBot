@@ -20,35 +20,14 @@ async function getWallet() {
     console.log(wallet.address);
     return wallet;
 }
-const pinFileToIPFS = async (pinataApiKey, pinataSecretApiKey, filePath) => {
+const pinFileToIPFS = async (pinataApiKey, pinataSecretApiKey, filePath, metadataPassed) => {
     const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
     let data = new FormData();
     data.append("file", fs.createReadStream(filePath));
     console.log(data);
-    const metadata = JSON.stringify({
-        name: 'NotUsedNow',
-        keyvalues: {
-            exampleKey: 'TODO'
-        }
-    });
+    const metadata = JSON.stringify(metadataPassed);
+    console.log(metadataPassed);
     data.append('pinataMetadata', metadata);
-    //pinataOptions are optional
-    const pinataOptions = JSON.stringify({
-        cidVersion: 0,
-        customPinPolicy: {
-            regions: [
-                {
-                    id: 'FRA1',
-                    desiredReplicationCount: 1
-                },
-                {
-                    id: 'NYC1',
-                    desiredReplicationCount: 2
-                }
-            ]
-        }
-    });
-    data.append('pinataOptions', pinataOptions);
     let IpfsHash = "";
 
     await axios.post(url, data, {
@@ -65,7 +44,7 @@ const pinFileToIPFS = async (pinataApiKey, pinataSecretApiKey, filePath) => {
 
         })
         .catch(function (error) {
-            console.log(error.toJSON())
+            console.log('failed')
             IpfsHash = 'Failed';
         });
     return IpfsHash;
@@ -160,11 +139,32 @@ async function uploadToRarible(lazyMintRequestBody, signature) {
             console.log(error);
         });
 }
+function generateIPFSMetadata(userAddress, tokenId, hash) {
+    let metaData = {
+        "name": `tempTwo`,
+        "description": `temp desc`,
+        "image": `ipfs://ipfs/${hash}`,
+        "external_url": `https://app.rarible.com/${userAddress.substring(0, 20)}:${tokenId}` /* This is the link to Rarible which we currently don't have, we can fill this in shortly */,
+        "animation_url": 'https://google.com'/* IPFS Hash just as image field, but it allows every type of multimedia files. Like mp3, mp4 etc */,
+        // the below section is not needed.
+        "attributes": [
+            {
+                "key": '?here' /* Key name - This must be a string */,
+                "trait_type": '?here?' /* Trait name - This must be a string */,
+                "value": '?here'/* Key Value - This must be a string */
+            }
+        ]
+    }
+    return metaData;
+}
 async function uploadAndMintAFile(userAddress, username, gameTitle) {
-    // Rinkeby ERC721 Contract Address is 0x6ede7f3c26975aad32a475e1021d8f6f39c89d82
-    let contractAddress = '0x6ede7f3c26975aad32a475e1021d8f6f39c89d82';
-    let hash = await pinFileToIPFS(process.env.PINATA_KEY, process.env.PINATA_SECRET, "./assets/3MBTestingVideo.mp4");
+    // Rinkeby ERC721 Contract Address is 0xB0EA149212Eb707a1E5FC1D2d3fD318a8d94cf05
+    let contractAddress = '0xB0EA149212Eb707a1E5FC1D2d3fD318a8d94cf05';
     let tokenId = await generateTokenId(contractAddress, userAddress);
+    let hash = await pinFileToIPFS(process.env.PINATA_KEY, process.env.PINATA_SECRET, "./assets/3MBTestingVideo.mp4", { "name": "temhjghghjvfghp" });
+    let metadata = generateIPFSMetadata(userAddress, tokenId, hash);
+    // Updates the IPFS Metadata
+    hash = await pinFileToIPFS(process.env.PINATA_KEY, process.env.PINATA_SECRET, "./assets/3MBTestingVideo.mp4", metadata);
     let lazyMintRequestBody = generatelazyMintRequestBody(tokenId, contractAddress, hash, userAddress);
     console.log(lazyMintRequestBody);
     let typedDataStructure = generateTypedDataStructure(contractAddress, lazyMintRequestBody);
@@ -176,20 +176,6 @@ async function uploadAndMintAFile(userAddress, username, gameTitle) {
     console.log(signature);
     await uploadToRarible(lazyMintRequestBody, signature);
 
-    let metaData = {
-        "name": `${username} recording at ${Date.now().toString()}`,
-        "description": `A recording of ${username} playing ${gameTitle} at ${Date.now().toString()}`,
-        "image": `ipfs://ipfs/${hash}`,
-        "external_url": 'tmep' /* This is the link to Rarible which we currently don't have, we can fill this in shortly */,
-        "animation_url": '?here'/* IPFS Hash just as image field, but it allows every type of multimedia files. Like mp3, mp4 etc */,
-        // the below section is not needed.
-        "attributes": [
-            {
-                "key": '?here' /* Key name - This must be a string */,
-                "trait_type": '?here?' /* Trait name - This must be a string */,
-                "value": '?here'/* Key Value - This must be a string */
-            }
-        ]
-    }
+
 }
 uploadAndMintAFile('0xAFa4f9a3fF1c73f64BeA02CDc74FDd7F89D91822', 'SampleUsername', 'SampleGameName');
