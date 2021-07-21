@@ -23,34 +23,35 @@ const response =  await axios({
 };
 
 async function createTwitchClip( accessToken ) {
-   try {const response = await axios({
-        method:'post',
-        url:'https://api.twitch.tv/helix/clips',
-        params:{
-            has_delay: false,
-            broadcaster_id: CHANNEL_BROADCAST_ID 
-        },
-        headers: 
-        {
-            "Authorization": "Bearer " + accessToken,
-                "Client-ID": APP_CLIENT_ID,
-        }
-    })
-    const json = response;
-    console.log("create-twitch-clip-json", json);
-    const clipData = json.data[0];
-        const clipID = clipData.id;
-        const clipURL = "https://clips.twitch.tv/" + clipID;
-        console.log("create-twitch-clip-clip-data=", clipData);
-        console.log("create-twitch-clip-clip-id=", clipID);
-
-        return {
-            clipID,
-            clipURL,
-        };
-
-    } catch( error ) {
-
+    try {
+        const response = await axios({
+            method:'post',
+            url:'https://api.twitch.tv/helix/clips',
+            params:{
+                has_delay: false,
+                broadcaster_id: CHANNEL_BROADCAST_ID 
+            },
+            headers: 
+            {
+                "Authorization": "Bearer " + accessToken,
+                    "Client-ID": APP_CLIENT_ID,
+            }
+        })
+        let json = response.data;
+            console.log(json);
+    
+            const clipData = json.data[0];
+            const clipID = clipData.id;
+            const clipURL = "https://clips.twitch.tv/" + clipID;
+            console.log("create-twitch-clip-clip-data=", clipData);
+            console.log("create-twitch-clip-clip-id=", clipID);
+    
+            return {
+                clipID,
+                clipURL,
+            };
+        
+    } catch (error) {
         if( typeof error === "string" && error.indexOf("Clipping is not possible for an offline channel.") !== -1 ) {
             const newError = new Error("Someone tried to clip while the channel is offline :ugh:");
             newError.type = ERROR_TYPE_TWITCH_CHANNEL_OFFLINE;
@@ -58,7 +59,6 @@ async function createTwitchClip( accessToken ) {
         }
 
         throw error;
-
     }
 }
 
@@ -70,11 +70,39 @@ const main = async () => {
 	let clipId;
 	try {
 		accessToken = await  getRefreshedAccessToken();
-        console.log(accessToken);
 	} catch (error) {
 		console.error("problem-fetching-access-token", error);
 		return "Unexpected problem when fetching the access token.";
 	}
+    try {
+        console.log("accesstoken", accessToken);
+
+        const response = await createTwitchClip(accessToken);
+        clipId = response.clipID;
+        responseClipURL = response.clipURL;
+
+    } catch( error ) {
+
+        console.error("problem-creating-clip", error);
+
+        if( typeof error === "string" && error.indexOf("{") === 0 ) {
+
+            error = response;
+
+            // Twitch broke =(
+            if( error.error === "Service Unavailable" && error.status === 503 ) {
+                return "Twitch API didn't want to create a clip right now, you need to manually create the clip :(";
+            }
+
+        }
+
+        if( error.message === "Clipping is not possible for an offline channel"
+            && error.status == 404 ) {
+            return "I can't clip while the channel is offline :(";
+        }
+
+        return "Unexpected problem when creating the clip.";
+    }
 }
 main();
 
