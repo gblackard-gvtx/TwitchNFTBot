@@ -63,7 +63,7 @@ async function createTwitchClip( accessToken ) {
 
 
 
-const main = async (userName) => {
+const main = async () => {
 	let accessToken;
 	let responseClipURL;
 	let clipId;
@@ -106,15 +106,9 @@ const main = async (userName) => {
 }
 exports.handler = async (event) => {
 
-    const username = event["queryStringParameters"] && event["queryStringParameters"]["user"];
-    var rarible = event["queryStringParameters"] && event["queryStringParameters"]["rarible"];
-    if (rarible == 'true') {
-        rarible = true;
-    }
-    console.log("username", username);
-    console.log("rarible", rarible);
+    
 
-    const message = await main(username);
+    const message = await main();
 
     const response = {
         statusCode: 200,
