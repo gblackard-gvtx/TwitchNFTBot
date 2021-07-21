@@ -24,10 +24,13 @@ client.on('message', (channel, tags, message, self) => {
 	if (self) return;
 
 	if (message.toLocaleLowerCase() === '!clip') {
+		
 		const AWSEndpointCall = async () => {
 			const response = await fetch('https://167u5tt2o0.execute-api.us-east-2.amazonaws.com/default/Endpoint');
-			const myJson = await response.json(); //extract JSON from the http response}
-			client.say(channel, `@${tags.username}, ${JSON.stringify(myJson)}`);
+			response.text().then(function(text){
+				client.say(channel, `@${tags.username}, ${text}`);
+			})
+			
 		}
 		AWSEndpointCall();
 	} else if (message.toLocaleLowerCase() === '!clip.rarible') {

@@ -54,7 +54,6 @@ async function createTwitchClip( accessToken ) {
     } catch (error) {
         if( typeof error === "string" && error.indexOf("Clipping is not possible for an offline channel.") !== -1 ) {
             const newError = new Error("Someone tried to clip while the channel is offline :ugh:");
-            newError.type = ERROR_TYPE_TWITCH_CHANNEL_OFFLINE;
             throw newError;
         }
 
@@ -64,7 +63,7 @@ async function createTwitchClip( accessToken ) {
 
 
 
-const main = async () => {
+const main = async (userName) => {
 	let accessToken;
 	let responseClipURL;
 	let clipId;
@@ -80,6 +79,7 @@ const main = async () => {
         const response = await createTwitchClip(accessToken);
         clipId = response.clipID;
         responseClipURL = response.clipURL;
+        return  responseClipURL;
 
     } catch( error ) {
 
@@ -87,7 +87,7 @@ const main = async () => {
 
         if( typeof error === "string" && error.indexOf("{") === 0 ) {
 
-            error = response;
+            error = JSON.parse(error);
 
             // Twitch broke =(
             if( error.error === "Service Unavailable" && error.status === 503 ) {
@@ -104,5 +104,25 @@ const main = async () => {
         return "Unexpected problem when creating the clip.";
     }
 }
-main();
+exports.handler = async (event) => {
 
+    const username = event["queryStringParameters"] && event["queryStringParameters"]["user"];
+    var rarible = event["queryStringParameters"] && event["queryStringParameters"]["rarible"];
+    if (rarible == 'true') {
+        rarible = true;
+    }
+    console.log("username", username);
+    console.log("rarible", rarible);
+
+    const message = await main(username);
+
+    const response = {
+        statusCode: 200,
+        headers: {
+            "content-type": "text/plain; charset=UTF-8"
+        },
+        body: message,
+    };
+    return response;
+
+};
