@@ -1,10 +1,9 @@
-mport os
 import requests
 import os
 import json
 from dotenv import load_dotenv
 
-load_dotenv('D:\\Users\\Adam\\TwitchNFTBot\\TwitchNFTBot\\PythonGetTwitchInfo\\.env')
+load_dotenv()
 
 clipID = 'AnimatedAdventurousHumanKappaPride-8Il1C4EdtT92Bq3n'
 clipURL = 'https://api.twitch.tv/helix/clips'
