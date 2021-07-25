@@ -1,3 +1,3 @@
-nonfungbotStreamer
-dev work stream
+nonfungbot
+Working on Chatbot day two
 QmTCph2FfJJiivaPi1bJwfk558pMimMPEWZsRJmb8ma6Uh

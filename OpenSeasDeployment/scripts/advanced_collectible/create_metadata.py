@@ -11,9 +11,18 @@ import datetime
 load_dotenv()
 
 imageURL = "https://ipfs.io/ipfs/QmTcqfKURfphReDCnTbSFUfByzfFjuRszwKFV6Xeb8Wxt6?filename=video.mp4"
-streamer='Tommy'
-game='LoL'
+streamer = 'Temporary'
+stream_title = 'Temporary'
+
+
 def main():
+    with open("scripts/advanced_collectible/meta.txt") as fp:
+        streamer = fp.readline()
+        stream_title = fp.readline()
+        imageURL = "https://ipfs.io/ipfs/"+fp.readline()+"?filename=video.mp4"
+    print(f'Streamer was: {streamer}')
+    print(f'Stream Title was: {stream_title}')
+    print(f'Image URL Tis: {imageURL}')
     print("Working on " + network.show_active())
     advanced_collectible = AdvancedCollectible[len(AdvancedCollectible) - 1]
     number_of_advanced_collectibles = advanced_collectible.tokenCounter()
@@ -31,7 +40,7 @@ def write_metadata(token_ids, nft_contract):
             "./metadata/{}/".format(network.show_active())
             + str(token_id)
             + "-"
-            + 'twitchClipTokens' #insert streamer here
+            + 'twitchClipTokens'  # insert streamer here
             + ".json"
         )
         if Path(metadata_file_name).exists():
@@ -41,37 +50,42 @@ def write_metadata(token_ids, nft_contract):
             )
         else:
             f = open("scripts/advanced_collectible/meta.txt", "r")
-            variables=f.readlines()
+            variables = f.readlines()
             lines = []
             count = 0
             # Strips the newline character
             for line in variables:
                 lines.append(line.strip())
                 count += 1
-            streamer=lines[0]
-            game = lines[1]
+            streamer = lines[0]
+            stream_title = lines[1]
             imageURL = lines[2]
             print(imageURL)
-            print(game)
+            print(stream_title)
             print("Creating Metadata file: " + metadata_file_name)
-            collectible_metadata["name"] = f"Geoffery Demo {streamer}'s Clip created on "+datetime.datetime.today().strftime("%d/%m/%Y %H:%M %p %Z")
-            collectible_metadata["description"] = f"A clip created by {streamer} on"+ datetime.datetime.today().strftime("%d/%m/%Y")+" while playing {game}"
-            collectible_metadata["image"] = "https://ipfs.io/ipfs/"+imageURL+"?filename=video.mp4"
+            collectible_metadata["name"] = (f"{streamer}'s Clip created on " + \
+                datetime.datetime.today().strftime("%d/%m/%Y %H:%M %p %Z")).strip()
+            collectible_metadata["description"] = (f"A clip created by {streamer} on " + datetime.datetime.today(
+            ).strftime("%d/%m/%Y")+f" during the stream '{stream_title}'").strip()
+            collectible_metadata["image"] = "https://ipfs.io/ipfs/" + \
+                imageURL+"?filename=video.mp4"
             with open(metadata_file_name, "w") as file:
                 json.dump(collectible_metadata, file)
             logs = pinMetadata(collectible_metadata)
             print(logs['IpfsHash'])
 
 # Stolen from https://github.com/Vourhey/pinatapy/blob/master/pinatapy/__init__.py
-def pinMetadata( json_to_pin, options=None):
+
+
+def pinMetadata(json_to_pin, options=None):
     url_suffix = "pinning/pinJSONToIPFS"
     h = {'pinata_api_key': os.environ.get('PINATA_API_KEY'),
-        'pinata_secret_api_key': os.environ.get('PINATA_API_SECRET')}
+         'pinata_secret_api_key': os.environ.get('PINATA_API_SECRET')}
     h["Content-Type"] = "application/json"
 
     body = {
-            "pinataContent": json_to_pin
-            }
+        "pinataContent": json_to_pin
+    }
 
     if options is not None:
         if "pinataMetadata" in options:
@@ -79,7 +93,8 @@ def pinMetadata( json_to_pin, options=None):
         if "pinataOptions" in options:
             body["pinataOptions"] = options["pinataOptions"]
 
-    res = requests.post("https://api.pinata.cloud/" + url_suffix, json=body, headers=h)
+    res = requests.post("https://api.pinata.cloud/" +
+                        url_suffix, json=body, headers=h)
 
     if res.status_code == 200:
         return res.json()
