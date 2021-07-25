@@ -12,13 +12,15 @@ def write_file_for_metadata(streamer, clip_title, ipfs_hash):
 def create_new_node(slug):
     clipInformationLog = subprocess.check_output(
         'python3 scripts/advanced_collectible/getClipInfo.py '+slug, shell=True, universal_newlines=True)
+    subprocess.check_output(
+        'python3 scripts/advanced_collectible/download_twitch_video.py '+slug, shell=True, universal_newlines=True)
     userName = clipInformationLog.split()[0]
     title = ' '.join(clipInformationLog.split()[1:])
     print('Username is: '+userName)
     print('Title is: '+title)
     print(slug)
     # download the video locally using youtube dl and then pass that path below
-    path_to_downloaded_video = 'scripts/advanced_collectible/42934450493-offset-1190.mp4'
+    path_to_downloaded_video = 'clip.mp4'
     videoHash = subprocess.check_output('python3 scripts/advanced_collectible/create_nft_from_twitch.py ' +
                                         path_to_downloaded_video, shell=True, universal_newlines=True)
     videoHash = videoHash.split()[-1]
