@@ -56,8 +56,8 @@ def write_metadata(token_ids, nft_contract):
             print(imageURL)
             print(game)
             print("Creating Metadata file: " + metadata_file_name)
-            collectible_metadata["name"] = f"Geoffery Demo {streamer}'s Clip created on "+datetime.date.today().strftime("%d/%m/%Y %H:%M:%S")
-            collectible_metadata["description"] = f"A clip created by {streamer} on"+ datetime.date.today().strftime("%d/%m/%Y")+" while playing {game}"
+            collectible_metadata["name"] = f"Geoffery Demo {streamer}'s Clip created on "+datetime.datetime.today().strftime("%d/%m/%Y %H:%M %p %Z")
+            collectible_metadata["description"] = f"A clip created by {streamer} on"+ datetime.datetime.today().strftime("%d/%m/%Y")+" while playing {game}"
             collectible_metadata["image"] = "https://ipfs.io/ipfs/"+imageURL+"?filename=video.mp4"
             with open(metadata_file_name, "w") as file:
                 json.dump(collectible_metadata, file)
