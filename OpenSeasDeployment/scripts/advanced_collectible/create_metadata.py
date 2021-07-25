@@ -4,11 +4,9 @@ import requests
 import json
 from brownie import AdvancedCollectible, network
 from metadata import sample_metadata
-from scripts.helpful_scripts import get_breed
 from pathlib import Path
 from dotenv import load_dotenv
 import datetime
-import json
 
 load_dotenv()
 
