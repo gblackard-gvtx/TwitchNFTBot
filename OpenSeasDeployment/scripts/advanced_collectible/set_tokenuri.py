@@ -4,11 +4,13 @@ from metadata import sample_metadata
 from scripts.helpful_scripts import get_breed, OPENSEA_FORMAT
 
 
-passedIPFSHashFromPinataHash="Qmc1S6GAdRS4rqadXycBf5ABTYZKZ2srngig8jpkDvYMDG"
+passedIPFSHashFromPinataHash = "Qmc1S6GAdRS4rqadXycBf5ABTYZKZ2srngig8jpkDvYMDG"
+
+
 def main():
     # Read the json file's hash that was saved from when metadata was created and uploaded
     f = open("scripts/advanced_collectible/hash.txt", "r")
-    passedIPFSHashFromPinataHash=f.read()
+    passedIPFSHashFromPinataHash = f.read()
     print("The hash of the JSON read is: "+passedIPFSHashFromPinataHash)
     print("Working on " + network.show_active())
     advanced_collectible = AdvancedCollectible[len(AdvancedCollectible) - 1]

@@ -135,5 +135,5 @@ dmypy.json
 .pyre/
 
 metadata/rinkeby
-hash.txt
-meta.txt
+scripts/advanced_collectible/hash.txt
+scripts/advanced_collectible/meta.txt

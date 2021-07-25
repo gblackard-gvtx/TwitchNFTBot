@@ -14,4 +14,4 @@ def main():
     transaction.wait(1)
     time.sleep(35)
     requestId = transaction.events["requestedCollectible"]["requestId"]
-    token_id = advanced_collectible.requestIdToTokenId(requestId)
+    advanced_collectible.requestIdToTokenId(requestId)
