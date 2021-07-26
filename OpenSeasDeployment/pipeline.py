@@ -2,7 +2,8 @@ import os
 import time
 import subprocess
 from scripts.advanced_collectible.getClipInfo import get_clip
-
+from scripts.advanced_collectible.download_twitch_video import download_twitch_clip
+from scripts.advanced_collectible.create_nft_from_twitch import pin_file_to_ipfs
 
 def write_file_for_metadata(streamer, clip_title, ipfs_hash):
     f = open("scripts/advanced_collectible/meta.txt", "w")
@@ -11,18 +12,19 @@ def write_file_for_metadata(streamer, clip_title, ipfs_hash):
 
 
 def create_new_node(slug):
-
     userName, title = get_clip(slug)
     print('Username is: ' + userName)
     print('Title is: ' + title)
     print(slug)
+    download_twitch_clip(slug)
     # download the video locally using youtube dl and then pass that path below
-    path_to_downloaded_video = 'scripts/advanced_collectible/42934450493-offset-1190.mp4'
-    videoHash = subprocess.check_output('python3 scripts/advanced_collectible/create_nft_from_twitch.py ' +
-                                        path_to_downloaded_video, shell=True, universal_newlines=True)
-    videoHash = videoHash.split()[-1]
-    print("Ipfs Hash of the Video is: "+videoHash)
-    write_file_for_metadata(userName, title, videoHash)
+    path_to_downloaded_video = 'clip.mp4'
+    video_ipfs_hash = pin_file_to_ipfs(path_to_downloaded_video)
+    print(video_ipfs_hash)
+    print("Ipfs Hash of the Video is: "+video_ipfs_hash)
+    # The following is used because youtube_dl doesn't overwrite files with the same name
+    os.remove("clip.mp4")
+    write_file_for_metadata(userName, title, video_ipfs_hash)
     time.sleep(3)
     os.system(
         'brownie run scripts/advanced_collectible/create_collectible.py --network rinkeby')
@@ -68,4 +70,4 @@ def create_new_node(slug):
     return testnet_url
 
 
-create_new_node('AnimatedAdventurousHumanKappaPride-8Il1C4EdtT92Bq3n')
+create_new_node('IgnorantArtsySowOMGScoots-MjyQbLGAuThVaQgz')
