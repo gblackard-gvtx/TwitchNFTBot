@@ -16,6 +16,7 @@ def write_file_for_metadata(streamer, clip_title, ipfs_hash):
 
 def create_clip_and_mint():
     clip_id = create_clip()
+    print(f'Clip Id: {clip_id}')
     mint_and_upload_clip(clip_id)
 
 
@@ -32,7 +33,7 @@ def mint_and_upload_clip(slug):
     print(video_ipfs_hash)
     print("Ipfs Hash of the Video is: "+video_ipfs_hash)
     # The following is used because youtube_dl doesn't overwrite files with the same name
-    os.remove("clip.mp4")
+    os.remove('clip.mp4')
     write_file_for_metadata(userName, title, video_ipfs_hash)
     time.sleep(3)
     os.system(
