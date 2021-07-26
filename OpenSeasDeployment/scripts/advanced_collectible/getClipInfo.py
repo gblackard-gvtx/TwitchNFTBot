@@ -25,12 +25,14 @@ def getRefreshAccessToken():
 
 # pass in access token to get the username and the title of the clip
 def get_clip(clip_id):
+    print(clip_id)
     gCQuery = {'id': clip_id}
     accessToken = getRefreshAccessToken()
     headers = {'Authorization': 'Bearer ' + accessToken, 'Client-ID': CLIENT}
     response = requests.get(clipURL, params=gCQuery, headers=headers)
     if response.status_code == 200:
         json = response.json()
+        print(json)
         userName = json['data'][0]['creator_name']
         title = json['data'][0]['title']
     return userName, title

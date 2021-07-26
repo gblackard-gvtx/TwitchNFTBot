@@ -199,3 +199,4 @@ Any questions? Join our [Discord](https://discord.gg/2YHSAey)
 This project is licensed under the [MIT license](LICENSE).
 
 ## NFT Visual Hack Bracciata revision
+Start the api with `flask run --host=0.0.0.0 --port=8080`

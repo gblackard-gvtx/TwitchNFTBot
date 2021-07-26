@@ -12,10 +12,10 @@ def write_file_for_metadata(streamer, clip_title, ipfs_hash):
 
 
 def create_new_node(slug):
+    print(f'The slug is: {slug}.')
     userName, title = get_clip(slug)
     print('Username is: ' + userName)
     print('Title is: ' + title)
-    print(slug)
     download_twitch_clip(slug)
     # download the video locally using youtube dl and then pass that path below
     path_to_downloaded_video = 'clip.mp4'
@@ -70,4 +70,3 @@ def create_new_node(slug):
     return testnet_url
 
 
-create_new_node('IgnorantArtsySowOMGScoots-MjyQbLGAuThVaQgz')
