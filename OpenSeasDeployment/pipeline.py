@@ -1,9 +1,12 @@
 import os
 import time
 import subprocess
+import requests
 from scripts.advanced_collectible.getClipInfo import get_clip
 from scripts.advanced_collectible.download_twitch_video import download_twitch_clip
 from scripts.advanced_collectible.create_nft_from_twitch import pin_file_to_ipfs
+from scripts.advanced_collectible.create_clip import create_clip
+
 
 def write_file_for_metadata(streamer, clip_title, ipfs_hash):
     f = open("scripts/advanced_collectible/meta.txt", "w")
@@ -11,7 +14,13 @@ def write_file_for_metadata(streamer, clip_title, ipfs_hash):
     f.close()
 
 
-def create_new_node(slug):
+def create_clip_and_mint():
+    clip_id = create_clip()
+    mint_and_upload_clip(clip_id)
+
+
+def mint_and_upload_clip(slug):
+    time.sleep(10)
     userName, title = get_clip(slug)
     print('Username is: ' + userName)
     print('Title is: ' + title)
@@ -70,4 +79,4 @@ def create_new_node(slug):
     return testnet_url
 
 
-create_new_node('IgnorantArtsySowOMGScoots-MjyQbLGAuThVaQgz')
+create_clip_and_mint()

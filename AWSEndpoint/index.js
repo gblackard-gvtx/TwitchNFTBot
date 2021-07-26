@@ -129,3 +129,5 @@ exports.handler = async (event) => {
     return response;
 
 };
+
+main()
