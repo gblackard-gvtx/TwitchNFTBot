@@ -35,7 +35,4 @@ def pin_file_to_ipfs(path_to_file, options=None):
         print(res.json()['IpfsHash'])
         return res.json()
 
-    return res
-
-
-pin_file_to_ipfs(str(sys.argv[1]))
+    return res.json()['IpfsHash']
