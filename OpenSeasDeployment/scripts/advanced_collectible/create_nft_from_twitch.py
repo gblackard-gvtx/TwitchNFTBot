@@ -32,7 +32,7 @@ def pin_file_to_ipfs(path_to_file, options=None):
                         url_suffix, files=files, headers=h)
 
     if res.status_code == 200:
-        print(res.json()['IpfsHash'])
-        return res.json()
+        return res.json()['IpfsHash']
+    print(res.json())
+    return res
 
-    return res.json()['IpfsHash']

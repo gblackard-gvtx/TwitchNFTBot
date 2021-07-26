@@ -6,3 +6,4 @@ def download_twitch_clip(slug):
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download(
             [f'https://clips.twitch.tv/{slug.strip()}'])
+download_twitch_clip('HomelyFriendlyRavenGOWSkull-1nA0PruMZnJ6oFG1')
