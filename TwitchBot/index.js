@@ -26,7 +26,7 @@ client.on('message', (channel, tags, message, self) => {
 	if (message.toLocaleLowerCase() === '!clip.openseas') {
 
 		const AWSEndpointCall = async () => {
-			const response = await fetch('https://167u5tt2o0.execute-api.us-east-2.amazonaws.com/default/Endpoint');
+			const response = await fetch('http://ec2-18-221-33-66.us-east-2.compute.amazonaws.com:8080/');
 			response.text().then(function (text) {
 				client.say(channel, `@${tags.username}, ${text}`);
 			})
