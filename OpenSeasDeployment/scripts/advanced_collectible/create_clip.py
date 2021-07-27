@@ -35,6 +35,7 @@ def create_clip():
         id = json['data'][0]['id']
     else:
         print(f'Error: {response.json()}')
+        return f'Error: {response.json().message}'
 
     print(f'Clip ID: {id}')
     return id

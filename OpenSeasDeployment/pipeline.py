@@ -80,4 +80,3 @@ def mint_and_upload_clip(slug):
     return testnet_url
 
 
-create_clip_and_mint()
