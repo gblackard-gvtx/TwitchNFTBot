@@ -6,5 +6,5 @@ app = Flask(__name__)
 
 
 @app.route("/")
-def hello_world():
+def create_clip():
     return create_clip_and_mint()

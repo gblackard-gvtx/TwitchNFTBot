@@ -2,7 +2,7 @@ import os
 import time
 import subprocess
 import requests
-from scripts.advanced_collectible.getClipInfo import get_clip
+from scripts.advanced_collectible.get_clip_info import get_clip
 from scripts.advanced_collectible.download_twitch_video import download_twitch_clip
 from scripts.advanced_collectible.create_nft_from_twitch import pin_file_to_ipfs
 from scripts.advanced_collectible.create_clip import create_clip
@@ -56,6 +56,7 @@ def mint_and_upload_clip(slug):
             jsonIPFSHash = output.split()[-1]
         if jsonIPFSHash == "overwrite!":
             print("Notify Somebody Urgently")
+            return 'Error: Creating the metadata for the NFT failed.'
     print(output)
     f = open("scripts/advanced_collectible/hash.txt", "w")
     f.write(jsonIPFSHash)
@@ -76,6 +77,7 @@ def mint_and_upload_clip(slug):
             last_out_of_uploading = outputOfUploading.split()[-1]
         if last_out_of_uploading == "tokenURI!":
             print("Notify Somebody Urgently")
+            return 'Error: Uploading the Clip to OpenSeas failed.'
     print(outputOfUploading)
     testnet_url = outputOfUploading.split()[-13]
     print(testnet_url)
