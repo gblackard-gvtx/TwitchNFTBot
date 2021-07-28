@@ -1,9 +1,12 @@
 import os
 import time
 import subprocess
-from scripts.advanced_collectible.getClipInfo import get_clip
+import requests
+from scripts.advanced_collectible.get_clip_info import get_clip
 from scripts.advanced_collectible.download_twitch_video import download_twitch_clip
 from scripts.advanced_collectible.create_nft_from_twitch import pin_file_to_ipfs
+from scripts.advanced_collectible.create_clip import create_clip
+
 
 def write_file_for_metadata(streamer, clip_title, ipfs_hash):
     f = open("scripts/advanced_collectible/meta.txt", "w")
@@ -11,7 +14,16 @@ def write_file_for_metadata(streamer, clip_title, ipfs_hash):
     f.close()
 
 
-def create_new_node(slug):
+def create_clip_and_mint():
+    clip_id = create_clip()
+    print(f'Clip Id: {clip_id}')
+    if clip_id.startswith('Error: '):
+        return clip_id
+    mint_and_upload_clip(clip_id)
+
+
+def mint_and_upload_clip(slug):
+    time.sleep(10)
     userName, title = get_clip(slug)
     print('Username is: ' + userName)
     print('Title is: ' + title)
@@ -23,7 +35,7 @@ def create_new_node(slug):
     print(video_ipfs_hash)
     print("Ipfs Hash of the Video is: "+video_ipfs_hash)
     # The following is used because youtube_dl doesn't overwrite files with the same name
-    os.remove("clip.mp4")
+    os.remove('clip.mp4')
     write_file_for_metadata(userName, title, video_ipfs_hash)
     time.sleep(3)
     os.system(
@@ -44,6 +56,7 @@ def create_new_node(slug):
             jsonIPFSHash = output.split()[-1]
         if jsonIPFSHash == "overwrite!":
             print("Notify Somebody Urgently")
+            return 'Error: Creating the metadata for the NFT failed.'
     print(output)
     f = open("scripts/advanced_collectible/hash.txt", "w")
     f.write(jsonIPFSHash)
@@ -64,10 +77,10 @@ def create_new_node(slug):
             last_out_of_uploading = outputOfUploading.split()[-1]
         if last_out_of_uploading == "tokenURI!":
             print("Notify Somebody Urgently")
+            return 'Error: Uploading the Clip to OpenSeas failed.'
     print(outputOfUploading)
     testnet_url = outputOfUploading.split()[-13]
     print(testnet_url)
     return testnet_url
 
 
-create_new_node('IgnorantArtsySowOMGScoots-MjyQbLGAuThVaQgz')
