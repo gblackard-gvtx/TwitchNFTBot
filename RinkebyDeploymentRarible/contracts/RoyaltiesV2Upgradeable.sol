@@ -3,7 +3,7 @@
 pragma solidity >=0.6.2 <0.8.0;
 pragma abicoder v2;
 
-import "@openzeppelinUpgrade/contracts/utils/introspection/ERC165Upgradeable.sol";
+import "@openzeppelinUpgrade/contracts/introspection/ERC165Upgradeable.sol";
 import "./LibRoyaltiesV2.sol";
 import "./RoyaltiesV2.sol";
 

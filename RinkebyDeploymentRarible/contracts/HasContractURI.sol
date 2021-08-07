@@ -2,7 +2,7 @@
 
 pragma solidity 0.7.6;
 
-import "@openzeppelinUpgrade/contracts/utils/introspection/ERC165Upgradeable.sol";
+import "@openzeppelinUpgrade/contracts/introspection/ERC165Upgradeable.sol";
 
 abstract contract HasContractURI is ERC165Upgradeable {
 

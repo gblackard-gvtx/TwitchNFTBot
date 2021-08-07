@@ -3,8 +3,8 @@
 pragma solidity 0.7.6;
 
 import "./ERC1271.sol";
-//import "@openzeppelin/contracts-upgradeable/drafts/EIP712Upgradeable.sol";
-import "@openzeppelinUpgrade/contracts/utils/cryptography/ECDSAUpgradeable.sol";
+import "@openzeppelinUpgrade/contracts/drafts/EIP712Upgradeable.sol";
+import "@openzeppelinUpgrade/contracts/cryptography/ECDSAUpgradeable.sol";
 
 abstract contract ERC1271Validator is EIP712Upgradeable {
     using AddressUpgradeable for address;
