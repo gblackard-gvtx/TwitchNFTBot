@@ -1,9 +1,9 @@
 pragma solidity 0.6.6;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@chainlink/contracts/src/v0.6/VRFConsumerBase.sol";
 
-contract AdvancedCollectible is ERC721, VRFConsumerBase {
+contract AdvancedCollectible is ERC1155, VRFConsumerBase {
     uint256 public tokenCounter;
     // add other things
     mapping(bytes32 => address) public requestIdToSender;
@@ -18,7 +18,7 @@ contract AdvancedCollectible is ERC721, VRFConsumerBase {
     constructor(address _VRFCoordinator, address _LinkToken, bytes32 _keyhash)
     public 
     VRFConsumerBase(_VRFCoordinator, _LinkToken)
-    ERC721("Creator Clips", "CCT")
+    ERC1155("Creator Clips", "CCT")
     {
         tokenCounter = 0;
         keyHash = _keyhash;
@@ -46,7 +46,7 @@ contract AdvancedCollectible is ERC721, VRFConsumerBase {
     function setTokenURI(uint256 tokenId, string memory _tokenURI) public {
         require(
             _isApprovedOrOwner(_msgSender(), tokenId),
-            "ERC721: transfer caller is not owner nor approved"
+            "ERC1155: transfer caller is not owner nor approved"
         );
         _setTokenURI(tokenId, _tokenURI);
     }
