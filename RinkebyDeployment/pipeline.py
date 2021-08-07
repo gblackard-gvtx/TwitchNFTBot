@@ -15,10 +15,11 @@ def write_file_for_metadata(streamer, clip_title, ipfs_hash):
 
 
 def create_clip_and_mint():
-    clip_id = create_clip()
-    print(f'Clip Id: {clip_id}')
-    if clip_id.startswith('Error: '):
-        return clip_id
+    # clip_id = create_clip()
+    # print(f'Clip Id: {clip_id}')
+    # if clip_id.startswith('Error: '):
+    #    return clip_id
+    clip_id = 'GracefulZealousSashimiBCouch-XPU_XbY8mn1eTqt8'
     mint_and_upload_clip(clip_id)
 
 
@@ -84,3 +85,4 @@ def mint_and_upload_clip(slug):
     return testnet_url
 
 
+create_clip_and_mint()
