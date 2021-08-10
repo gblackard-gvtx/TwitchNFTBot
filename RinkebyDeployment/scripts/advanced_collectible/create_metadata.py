@@ -97,10 +97,12 @@ def pinMetadata(path_to_file, options=None):
         files = [("file", (file.as_posix(), open(file, "rb")))
                  for file in path_to_file.glob('**/*') if not file.is_dir()]
     else:
-        files = {
-            "file": open(path_to_file, "rb")
-        }
-    res = requests.post(url, files=files, headers=h)
+        print('else was hit')
+        with open(path_to_file, 'rb') as f:
+            data = f.read()
+        files = data
+        print(data)
+    res = requests.post(url, data=files, headers=h)
 
     if res.status_code == 200:
         print(res.json())
