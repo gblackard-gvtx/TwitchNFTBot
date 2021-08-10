@@ -2,8 +2,8 @@
 import os
 import requests
 import json
-#from brownie import AdvancedCollectible, network
-#from metadata import sample_metadata
+from brownie import AdvancedCollectible, network
+from metadata import sample_metadata
 from pathlib import Path
 from dotenv import load_dotenv
 import datetime
