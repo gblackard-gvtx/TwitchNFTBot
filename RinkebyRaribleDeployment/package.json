@@ -1,0 +1,16 @@
+{
+  "name": "rinkebyraribledeployment",
+  "version": "1.0.0",
+  "description": "JS intergration from Twitch to rarible protocal",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "dotenv": "^10.0.0",
+    "web3": "^1.5.1"
+  }
+}
