@@ -2,6 +2,8 @@ import requests
 from pathlib import Path
 import sys
 import os
+import subprocess
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -29,6 +31,6 @@ def pin_nft_to_nftstore(path_to_file):
         return res.json()['value']['cid']
     if res.json()['ok'] == False:
         print(res.json())
-        print('We have encountered a error:' + res.json())
+        print('We have encountered a error:' + res.json()['error']['message'])
     return res
 
