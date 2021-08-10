@@ -18,14 +18,14 @@ def pin_nft_to_nftstore(path_to_file):
         files = [("file", (file.as_posix(), open(file, "rb")))
                  for file in path_to_file.glob('**/*') if not file.is_dir()]
     else:
-        files = {
-            "file": open(path_to_file, "rb")
-        }
-    res = requests.post(url, files=files, headers=h)
+        with open(path_to_file, "rb") as f:
+            data = f.read()
+        files= data
+    res = requests.post(url, data=files, headers=h)
 
     if res.status_code == 200:
         print(res.json())
         return res.json()['value']['cid']
     if res.json()['ok'] == False:
-        print('We have encountered a errer:' + res.json()['error'])
+        print('We have encountered a error:' + res.json()['error'])
     return res
