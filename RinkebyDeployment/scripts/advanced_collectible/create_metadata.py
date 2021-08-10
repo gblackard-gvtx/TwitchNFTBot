@@ -106,5 +106,5 @@ def pinMetadata(path_to_file, options=None):
         print(res.json())
         return res.json()['value']['cid']
     if res.json()['ok'] == False:
-        print('We have encountered a error:' + res.json()['error'])
+        print('We have encountered a error:' + res.json()['error']['message'])
     return res

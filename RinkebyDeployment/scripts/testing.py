@@ -8,7 +8,7 @@ def test_pin_video_small():
     assert pin_nft_to_nftstore('testing-small.mp4') == 'bafybeighzqvavbmhcui2h7rc3plphnriqhy47sew22syu2cey3snnqig5y', "Should be bafybeighzqvavbmhcui2h7rc3plphnriqhy47sew22syu2cey3snnqig5y"
 
 if __name__ == "__main__":
-    # test_pin_json()
-    test_pin_video()
+    test_pin_json()
     test_pin_video_small()
+    test_pin_video()
     print("Everything passed")

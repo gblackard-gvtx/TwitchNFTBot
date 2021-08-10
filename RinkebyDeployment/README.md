@@ -199,4 +199,3 @@ Any questions? Join our [Discord](https://discord.gg/2YHSAey)
 This project is licensed under the [MIT license](LICENSE).
 
 ## NFT Visual Hack Bracciata revision
-Nessecary commands: `npm i -g ipfs-car`
