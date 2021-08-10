@@ -11,7 +11,7 @@ def pin_nft_to_nftstore(path_to_file):
     print(path_to_file)
     url ='https://api.nft.storage/upload'
     h = {'Authorization': 'Bearer ' + os.environ.get('NFT_STORE_API_KEY'), 
-        'Content-Type':'video'}
+        'Content-Type':'application/car'}
     if type(path_to_file) is str:
         path_to_file = Path(path_to_file)
     if path_to_file.is_dir():
@@ -20,12 +20,15 @@ def pin_nft_to_nftstore(path_to_file):
     else:
         with open(path_to_file, "rb") as f:
             data = f.read()
-        files= data
+        print(len(data))
+        files = data
     res = requests.post(url, data=files, headers=h)
 
     if res.status_code == 200:
         print(res.json())
         return res.json()['value']['cid']
     if res.json()['ok'] == False:
-        print('We have encountered a error:' + res.json()['error'])
+        print(res.json())
+        print('We have encountered a error:' + res.json())
     return res
+
