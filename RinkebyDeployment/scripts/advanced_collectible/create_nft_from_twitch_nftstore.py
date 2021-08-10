@@ -26,7 +26,7 @@ def pin_nft_to_nftstore(path_to_file):
         files = data
     res = requests.post(url, data=files, headers=h, timeout=59)
     if res.status_code == 200:
-        print(res.json())
+        print(res.json()['value']['cid'])
         return res.json()['value']['cid']
     if res.json()['ok'] == False:
         print(res.json())
