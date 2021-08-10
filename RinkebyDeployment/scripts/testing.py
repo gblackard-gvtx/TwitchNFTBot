@@ -5,7 +5,7 @@ def test_pin_json():
 def test_pin_video():
     assert pin_nft_to_nftstore('testing.mp4') == 'bafybeifz5gw6h2aoik3fa745rjzbi5hgtsjqmgys2a6mmskdw5zgtxtt5i', "Should be bafybeifz5gw6h2aoik3fa745rjzbi5hgtsjqmgys2a6mmskdw5zgtxtt5i"
 def test_pin_video_small():
-    assert pin_nft_to_nftstore('testing-small.mp4') == 'bafybeiew466bk3caift2gsnzeb23qmzmpqnim32utahanj5f5ks2ycvk7y', "Should be bafybeiew466bk3caift2gsnzeb23qmzmpqnim32utahanj5f5ks2ycvk7y"
+    assert pin_nft_to_nftstore('testing-small.mp4') == 'bafybeide3g67aazuwlijqdwreqeddioyn5wfj4b3uidh6zxtpemdaimmue', "Should be bafybeide3g67aazuwlijqdwreqeddioyn5wfj4b3uidh6zxtpemdaimmue"
 
 if __name__ == "__main__":
     test_pin_json()
