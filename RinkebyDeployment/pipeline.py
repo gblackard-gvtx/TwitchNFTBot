@@ -13,22 +13,27 @@ def write_file_for_metadata(streamer, clip_title, ipfs_hash):
     f.writelines([streamer, '\n', clip_title, '\n', ipfs_hash])
     f.close()
 
-
-def create_clip_and_mint():
-    clip_id = create_clip()
-    print(f'Clip Id: {clip_id}')
-    if clip_id.startswith('Error: '):
-        return clip_id
-    mint_and_upload_clip(clip_id)
-
-
-def mint_and_upload_clip(slug):
+def get_clip_information_and_download(slug):
     time.sleep(10)
     userName, title = get_clip(slug)
     print('Username is: ' + userName)
     print('Title is: ' + title)
     print(slug)
     download_twitch_clip(slug)
+    return userName,title
+
+def create_clip_and_mint():
+    # clip_id = create_clip()
+    user_name='user'
+    title='title'
+    #if clip_id.startswith('Error: '):
+    #    return clip_id
+    #user_name,title = get_clip_information_and_download(clip_id)
+    mint_and_upload_clip(user_name,title)
+
+
+def mint_and_upload_clip(user_name,title):
+    userName=user_name
     # download the video locally using youtube dl and then pass that path below
     path_to_downloaded_video = 'clip.mp4'
     video_ipfs_hash = pin_nft_to_nftstore(path_to_downloaded_video)
@@ -44,6 +49,10 @@ def mint_and_upload_clip(slug):
     output = subprocess.check_output(
         "brownie run scripts/advanced_collectible/create_metadata.py --network rinkeby", shell=True, universal_newlines=True)
     jsonIPFSHash = output.split()[-1]
+    if jsonIPFSHash == '0':
+        # This seems to happen when the folder within metadata titled rinkeby was not created.
+        # TODO: Add other failure cases.
+        return 'NFT Creation failed'
     print("Ipfs Hash of the JSON is:" + jsonIPFSHash)
     if(jsonIPFSHash == "overwrite!"):
         runs = 0
@@ -83,4 +92,4 @@ def mint_and_upload_clip(slug):
     print(testnet_url)
     return testnet_url
 
-
+create_clip_and_mint()
