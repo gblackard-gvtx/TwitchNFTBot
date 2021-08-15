@@ -71,22 +71,13 @@ def write_metadata(token_ids, nft_contract):
                 imageURL+"?filename=video.mp4"
             with open(metadata_file_name, "w") as file:
                 json.dump(collectible_metadata, file)
-            path = write_json_file(collectible_metadata)
-            hash_created = pinMetadata(path)
-            
+            hash_created = pinMetadata(collectible_metadata)
             print(hash_created)
             return hash_created
 # Stolen from https://github.com/Vourhey/pinatapy/blob/master/pinatapy/__init__.py
 
 
-def write_json_file(json_to_pin):
-    path = 'temp.json'
-    with open(path, 'w') as outfile:
-        json.dump(json_to_pin, outfile)
-    return path
-
-
-def pinMetadata(path_to_file, options=None):
+def pinMetadata(json_to_pin, options=None):
     url_suffix = "pinning/pinJSONToIPFS"
     h = {'pinata_api_key': os.environ.get('PINATA_API_KEY'),
          'pinata_secret_api_key': os.environ.get('PINATA_API_SECRET')}
@@ -104,6 +95,6 @@ def pinMetadata(path_to_file, options=None):
     res = requests.post("https://api.pinata.cloud/" +
                             url_suffix, json=body, headers=h)
     if res.status_code == 200:
-        return res.json()
+        return res.json()['IpfsHash']
     return res
 
