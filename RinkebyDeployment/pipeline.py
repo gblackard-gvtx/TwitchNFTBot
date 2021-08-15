@@ -4,7 +4,7 @@ import subprocess
 import requests
 from scripts.advanced_collectible.get_clip_info import get_clip
 from scripts.advanced_collectible.download_twitch_video import download_twitch_clip
-from scripts.advanced_collectible.create_nft_from_twitch_nftstore import pin_nft_to_nftstore
+from scripts.advanced_collectible.create_nft_from_twitch import pin_file_to_ipfs
 from scripts.advanced_collectible.create_clip import create_clip
 
 
@@ -36,7 +36,7 @@ def mint_and_upload_clip(user_name,title):
     userName=user_name
     # download the video locally using youtube dl and then pass that path below
     path_to_downloaded_video = 'clip.mp4'
-    video_ipfs_hash = pin_nft_to_nftstore(path_to_downloaded_video)
+    video_ipfs_hash = pin_file_to_ipfs(path_to_downloaded_video)
     print(video_ipfs_hash)
     print("Ipfs Hash of the Video is: "+video_ipfs_hash)
     # The following is used because youtube_dl doesn't overwrite files with the same name
