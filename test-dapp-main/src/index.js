@@ -1,5 +1,3 @@
-import React from "react";
-import ReactDom from "react-dom";
 import MetaMaskOnboarding from '@metamask/onboarding';
 // eslint-disable-next-line camelcase
 import {
@@ -1085,11 +1083,3 @@ function getPermissionsDisplayString(permissionsArray) {
 function stringifiableToHex(value) {
   return ethers.utils.hexlify(Buffer.from(JSON.stringify(value)));
 }
-const APP = () => {
-  return (
-    <div>
-      <button type="button" class="btn btn-dark" id="connectButton">Connect</button>
-    </div>
-  )
-}
-ReactDom.render(<APP />, document.querySelector("#root"));
