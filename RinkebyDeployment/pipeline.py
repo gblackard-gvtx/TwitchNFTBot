@@ -23,12 +23,12 @@ def get_clip_information_and_download(slug):
     return userName,title
 
 def create_clip_and_mint():
-    # clip_id = create_clip()
+    clip_id = create_clip()
     user_name='user'
     title='title'
-    #if clip_id.startswith('Error: '):
-    #    return clip_id
-    #user_name,title = get_clip_information_and_download(clip_id)
+    if clip_id.startswith('Error: '):
+        return clip_id
+    user_name,title = get_clip_information_and_download(clip_id)
     mint_and_upload_clip(user_name,title)
 
 
@@ -92,4 +92,3 @@ def mint_and_upload_clip(user_name,title):
     print(testnet_url)
     return testnet_url
 
-create_clip_and_mint()
