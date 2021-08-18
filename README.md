@@ -4,12 +4,12 @@ Originally followed along with [How I created a !clip command that automatically
 -----------------------------------------------------------------------------------------------------------------------------------
 __Step 1: Registering a Twitch application__
 
-* To be able to clip your steam programatically you must first register your app with Twitch.
+To be able to clip your steam programatically you must first register your app with Twitch.
 * To register your app go to the [Developer Dashboard](https://dev.twitch.tv/login). Login and click "Register Your App"
 * Name your app based on the project. For the "OAuth Redirect URL" type in "http://localhost/". As discussed above this is very important step.
 * Select "Application Integration"
 * Click back into the application and you will see both the application's "Client ID" and "Secret". Copy and save these for later
-*NOTE:Both the "Client ID" and the "Secret", is sensitive information, so do not share them with anyone.
+__NOTE:Both the "Client ID" and the "Secret", is sensitive information, so do not share them with anyone.__
     
     
     
