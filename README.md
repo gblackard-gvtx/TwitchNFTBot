@@ -17,8 +17,10 @@ To be able to clip your steam programatically you must first register your app w
 __Step 2: Giving your application the rights to clip__
 
 * In your preffered browser paste in the following 
-    *  ```"https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=##CLIENT_ID##&redirect_uri=http://localhost/&scope=clips:edit" ```
-    * Make sure you replace the ##CLIENT_ID## with your application's "Client ID" from above.
+```
+https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=##CLIENT_ID##&redirect_uri=http://localhost/&scope=clips:edit
+```
+* Make sure you replace the ##CLIENT_ID## with your application's "Client ID" from above.
 * You will be asked to authorize the your app. Click "Authorize".
 * Twitch will redirect us to "http://localhost/" - which probably will look like a broken page.
 * In the URL of the broken looking page copy the alphnumeric code between code= and &scope.
@@ -28,11 +30,11 @@ __Step 2: Giving your application the rights to clip__
     
 __Step 3: Getting Refresh Token__
 
-    Twitch gives you an Access Token, but then requires a Refresh Token to update that Access Token.
-    The easiest way to get the Refresh Token is to us a Post request either with Postman or Insomnia.
-    
+  Twitch gives you an Access Token, but then requires a Refresh Token to update that Access Token.
+  The easiest way to get the Refresh Token is to us a Post request either with Postman or Insomnia.
 ```
-    "curl --request POST \
-  --url 'https://id.twitch.tv/oauth2/token?client_id=##CLIENTID##&client_secret=##SECRET##&code=##AUTHCODE##&grant_type=authorization_code&redirect_uri=http%3A%2F%2Flocalhost%2F' 
-  --header 'Content-type: application/json' \"
+curl --request POST \
+    --url 'https://id.twitch.tv/oauth2/token?   client_id=##CLIENTID##&client_secret=##SECRET##&code=##AUTHCODE##&grant_type=authorization_code&redirect_uri=http%3A%2F%2Flocalhost%2F' 
+    --header 'Content-type: application/json' \
 ```
+
