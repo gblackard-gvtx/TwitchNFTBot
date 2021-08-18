@@ -15,6 +15,7 @@ import {
   piggybankBytecode,
   piggybankAbi,
 } from './constants.json';
+const axios = require("axios");
 
 let ethersProvider;
 let hstFactory;
@@ -834,7 +835,7 @@ const initialize = async () => {
 
     let tokenURL =
     "https://api-staging.rarible.com/protocol/v0.1/ethereum/nft/collections/" +
-    contractAddress +
+    '0x6ede7f3c26975aad32a475e1021d8f6f39c89d82' +
     "/generate_token_id?minter=" +
     walletAddress;
   let tokenID = '';
@@ -866,28 +867,29 @@ const initialize = async () => {
             name: "verifyingContract",
           },
         ],
+        Part: [
+          { name: "account", type: "address" },
+          { name: "value", type: "uint96" },
+        ],
         Mint721: [
           { name: "tokenId", type: "uint256" },
           { name: "tokenURI", type: "string" },
           { name: "creators", type: "Part[]" },
           { name: "royalties", type: "Part[]" },
         ],
-        Part: [
-          { name: "account", type: "address" },
-          { name: "value", type: "uint96" },
-        ],
       },
       domain: {
         chainId: 4,
         name: "Rarible Lazy Mint",
-        verifyingContract: contractAddress,
+        verifyingContract: '0x6ede7f3c26975aad32a475e1021d8f6f39c89d82',
         version: "1",
       },
+      primaryType: "Mint721",
       message: {
         "@type": "ERC721",
-        contract: contractAddress,
+        contract: '0x6ede7f3c26975aad32a475e1021d8f6f39c89d82',
         tokenId: tokenID,
-        " uri": ipfsHash,
+        tokenURI: ipfsHash,
         creators: [
           {
             account: walletAddress,
@@ -897,7 +899,7 @@ const initialize = async () => {
         royalties: [
           {
             account: walletAddress,
-            value: 2000,
+            value: '2000',
           },
         ],
       },
@@ -906,7 +908,8 @@ const initialize = async () => {
   }
   signTypedDataV4.onclick = async () => {
     // Get Rarible Token:
-    let msg = getRaribleTokenMsg();
+    let msg = await getRaribleTokenMsg();
+    console.log(msg);
     const networkId = parseInt(networkDiv.innerHTML, 10);
     const chainId = parseInt(chainIdDiv.innerHTML, 16) || networkId;
     const msgParams = msg;
