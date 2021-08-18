@@ -10,14 +10,14 @@ To be able to clip your steam programatically you must first register your app w
 * Select "Application Integration"
 * Click back into the application and you will see both the application's "Client ID" and "Secret". Copy and save these for later
 
-__NOTE:Both the "Client ID" and the "Secret", is sensitive information, so do not share them with anyone.__
+    __NOTE: Both the "Client ID" and the "Secret", is sensitive information, so do not share them with anyone.__
     
     
     
 __Step 2: Giving your application the rights to clip__
 
 * In your preffered browser paste in the following 
-    *  "https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=##CLIENT_ID##&redirect_uri=http://localhost/&scope=clips:edit" 
+    *  ```"https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=##CLIENT_ID##&redirect_uri=http://localhost/&scope=clips:edit" ```
     * Make sure you replace the ##CLIENT_ID## with your application's "Client ID" from above.
 * You will be asked to authorize the your app. Click "Authorize".
 * Twitch will redirect us to "http://localhost/" - which probably will look like a broken page.
@@ -30,7 +30,8 @@ __Step 3: Getting Refresh Token__
 
     Twitch gives you an Access Token, but then requires a Refresh Token to update that Access Token.
     The easiest way to get the Refresh Token is to us a Post request either with Postman or Insomnia.
-    __code(curl --request POST \
+    ``` 
+    curl --request POST \
   --url 'https://id.twitch.tv/oauth2/token?client_id=##CLIENTID##&client_secret=##SECRET##&code=##AUTHCODE##&grant_type=authorization_code&redirect_uri=http%3A%2F%2Flocalhost%2F' \
   --header 'Content-type: application/json' \
-  --cookie 'server_session_id=ff0eb563e28c488aa5022b20882815b6; unique_id=jUFXU2fbn2ATIQogeyS2GGlmJwEI10ea; unique_id_durable=jUFXU2fbn2ATIQogeyS2GGlmJwEI10ea; twitch.lohp.countryCode=US')
+```
