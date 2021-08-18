@@ -1,7 +1,7 @@
 # TwitchNFTBot
 Originally followed along with [How I created a !clip command that automatically created a Twitch clip and posted it to my Discord (using AWS Lambdas)](https://www.specialagentsqueaky.com/blog-post/8gkvc50n/2020-06-17-how-i-created-clip-command-for-twitch-clips/#step-2-registering-a-twitch-application) before writing my own documentation, as not everything is his areticle is needed. 
 
-
+-----------------------------------------------------------------------------------------------------------------------------------
 __Step 1: Registering a Twitch application__
     * To be able to clip your steam programatically you must first register your app with Twitch.
     * To register your app go to the [Developer Dashboard](https://dev.twitch.tv/login). Login and click "Register Your App"
