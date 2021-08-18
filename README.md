@@ -9,12 +9,15 @@ To be able to clip your steam programatically you must first register your app w
 * Name your app based on the project. For the "OAuth Redirect URL" type in "http://localhost/". As discussed above this is very important step.
 * Select "Application Integration"
 * Click back into the application and you will see both the application's "Client ID" and "Secret". Copy and save these for later
+
 __NOTE:Both the "Client ID" and the "Secret", is sensitive information, so do not share them with anyone.__
     
     
     
 __Step 2: Giving your application the rights to clip__
-    * In your preffered browser paste in the following "https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=##CLIENT_ID##&redirect_uri=http://localhost/&scope=clips:edit" Make sure you replace the ##CLIENT_ID## with your application's "Client ID" from above.
+* In your preffered browser paste in the following 
+    *  "https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=##CLIENT_ID##&redirect_uri=http://localhost/&scope=clips:edit" 
+* Make sure you replace the ##CLIENT_ID## with your application's "Client ID" from above.
     * You will be asked to authorize the your app. Click "Authorize".
     * Twitch will redirect us to "http://localhost/" - which probably will look like a broken page.
     * In the URL of the broken looking page copy the alphnumeric code between code= and &scope.
