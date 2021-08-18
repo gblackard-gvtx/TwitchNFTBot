@@ -847,63 +847,51 @@ const initialize = async () => {
     }
     console.log(tokenID);
   
-    const dataStruct = JSON.stringify({
+    const dataStruct = {
       types: {
         EIP712Domain: [
-          {
-            type: "string",
-            name: "name",
-          },
-          {
-            type: "string",
-            name: "version",
-          },
-          {
-            type: "uint256",
-            name: "chainId",
-          },
-          {
-            type: "address",
-            name: "verifyingContract",
-          },
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
         ],
-        Part: [
-          { name: "account", type: "address" },
-          { name: "value", type: "uint96" },
-        ],
-        Mint721: [
+        "Mint721": [
           { name: "tokenId", type: "uint256" },
           { name: "tokenURI", type: "string" },
           { name: "creators", type: "Part[]" },
-          { name: "royalties", type: "Part[]" },
-        ],
+          { name: "royalties", type: "Part[]" }
+      ],
+      "Part": [
+          { name: "account", type: "address" },
+          { name: "value", type: "uint96" }
+      ],
       },
       domain: {
         chainId: 4,
-        name: "Rarible Lazy Mint",
+        name: 'Rarible Lazy Mint',
         verifyingContract: '0x6ede7f3c26975aad32a475e1021d8f6f39c89d82',
-        version: "1",
+        version: '1',
       },
-      primaryType: "Mint721",
+      primaryType: 'Mint721',
       message: {
-        "@type": "ERC721",
-        contract: '0x6ede7f3c26975aad32a475e1021d8f6f39c89d82',
-        tokenId: tokenID,
-        tokenURI: ipfsHash,
-        creators: [
+        '@type': 'ERC721',
+        'contract': '0x6ede7f3c26975aad32a475e1021d8f6f39c89d82',
+        'tokenId': tokenID,
+        'tokenURI': ipfsHash,
+        'creators': [
           {
             account: walletAddress,
-            value: "10000",
+            value: '10000',
           },
         ],
-        royalties: [
+        'royalties': [
           {
             account: walletAddress,
-            value: '2000',
+            value: '1500',
           },
         ],
       },
-    });
+    };
     return dataStruct;
   }
   signTypedDataV4.onclick = async () => {
@@ -913,14 +901,21 @@ const initialize = async () => {
     const networkId = parseInt(networkDiv.innerHTML, 10);
     const chainId = parseInt(chainIdDiv.innerHTML, 16) || networkId;
     const msgParams = msg;
+    console.log(msgParams);
+    console.log(accounts[0]);
+    const stringify = JSON.stringify(msgParams);
     try {
       const from = accounts[0];
+      console.log(ethereum);
       const sign = await ethereum.request({
         method: 'eth_signTypedData_v4',
-        params: [from, JSON.stringify(msgParams)],
+        params: [from, stringify],
       });
+      console.log(sign);
       signTypedDataV4Result.innerHTML = sign;
       signTypedDataV4Verify.disabled = false;
+      msg['signatures'] = [sign];
+      
     } catch (err) {
       console.error(err);
       signTypedDataV4Result.innerHTML = `Error: ${err.message}`;
