@@ -828,10 +828,8 @@ const initialize = async () => {
    * Sign Typed Data V4
    */
    async function getRaribleTokenMsg(){
-    let ipfsHash =
-    "ipfs://ipfs/" +
-    "bafybeigpgh7aty2amsiaj24jgpvn7nhp6nnqijtpcvj5tvdre6iyamvtla";
-    const walletAddress = "0x90e63c3d53E0Ea496845b7a03ec7548B70014A91";
+    let ipfsHash = "/ipfs/bafybeigpgh7aty2amsiaj24jgpvn7nhp6nnqijtpcvj5tvdre6iyamvtla";
+    const walletAddress = "0x985a1a1a76de1a98878e00f36da673c5b1c9b25e";
 
     let tokenURL =
     "https://api-staging.rarible.com/protocol/v0.1/ethereum/nft/collections/" +
@@ -878,6 +876,7 @@ const initialize = async () => {
         'contract': '0x6ede7f3c26975aad32a475e1021d8f6f39c89d82',
         'tokenId': tokenID,
         'tokenURI': ipfsHash,
+        'uri': ipfsHash,
         'creators': [
           {
             account: walletAddress,
@@ -892,12 +891,32 @@ const initialize = async () => {
         ],
       },
     };
-    return dataStruct;
+    const dataStructSimple= {
+      '@type': 'ERC721',
+      'contract': '0x6ede7f3c26975aad32a475e1021d8f6f39c89d82',
+      'tokenId': tokenID,
+      'uri': ipfsHash,
+      'creators': [
+        {
+          account: walletAddress,
+          value: '10000',
+        },
+      ],
+      'royalties': [
+        {
+          account: walletAddress,
+          value: '1500',
+        },
+      ],
+    };
+
+    return [dataStructSimple, dataStruct];
   }
   signTypedDataV4.onclick = async () => {
     // Get Rarible Token:
-    let msg = await getRaribleTokenMsg();
-    console.log(msg);
+    let msgs = await getRaribleTokenMsg();
+    let msg = msgs[1];
+    let dataTwo = msgs[0];
     const networkId = parseInt(networkDiv.innerHTML, 10);
     const chainId = parseInt(chainIdDiv.innerHTML, 16) || networkId;
     const msgParams = msg;
@@ -914,7 +933,20 @@ const initialize = async () => {
       console.log(sign);
       signTypedDataV4Result.innerHTML = sign;
       signTypedDataV4Verify.disabled = false;
-      msg['signatures'] = [sign];
+      console.log(dataTwo);
+      dataTwo['signatures'] = [sign];
+      console.log(dataTwo);
+        let results = await axios.post('https://api-dev.rarible.com/protocol/v0.1/ethereum/nft/mints',dataTwo).catch(function (err){
+          if (err.response) {
+            console.log(err.response.data);
+            console.log(err.response.status);
+            console.log(err.response.headers);
+          }
+          console.error(err);
+        });
+        console.log(results);
+      
+      
       
     } catch (err) {
       console.error(err);
