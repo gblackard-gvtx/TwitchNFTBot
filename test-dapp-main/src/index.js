@@ -741,7 +741,7 @@ const initialize = async () => {
           name: 'Bob',
           wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
         },
-        contents: 'Hello, Bob!',
+        contents: 'Hello, Bobbydsdkndsknfdss!',
       },
     };
     try {
@@ -826,59 +826,90 @@ const initialize = async () => {
   /**
    * Sign Typed Data V4
    */
-  signTypedDataV4.onclick = async () => {
-    const networkId = parseInt(networkDiv.innerHTML, 10);
-    const chainId = parseInt(chainIdDiv.innerHTML, 16) || networkId;
-    const msgParams = {
+   async function getRaribleTokenMsg(){
+    let ipfsHash =
+    "ipfs://ipfs/" +
+    "bafybeigpgh7aty2amsiaj24jgpvn7nhp6nnqijtpcvj5tvdre6iyamvtla";
+    const walletAddress = "0x90e63c3d53E0Ea496845b7a03ec7548B70014A91";
+
+    let tokenURL =
+    "https://api-staging.rarible.com/protocol/v0.1/ethereum/nft/collections/" +
+    contractAddress +
+    "/generate_token_id?minter=" +
+    walletAddress;
+  let tokenID = '';
+    try {
+      const response = await axios.get(tokenURL);
+      tokenID = response.data.tokenId;
+    } catch (error) {
+      console.error(error);
+    }
+    console.log(tokenID);
+  
+    const dataStruct = JSON.stringify({
+      types: {
+        EIP712Domain: [
+          {
+            type: "string",
+            name: "name",
+          },
+          {
+            type: "string",
+            name: "version",
+          },
+          {
+            type: "uint256",
+            name: "chainId",
+          },
+          {
+            type: "address",
+            name: "verifyingContract",
+          },
+        ],
+        Mint721: [
+          { name: "tokenId", type: "uint256" },
+          { name: "tokenURI", type: "string" },
+          { name: "creators", type: "Part[]" },
+          { name: "royalties", type: "Part[]" },
+        ],
+        Part: [
+          { name: "account", type: "address" },
+          { name: "value", type: "uint96" },
+        ],
+      },
       domain: {
-        chainId: chainId.toString(),
-        name: 'Ether Mail',
-        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-        version: '1',
+        chainId: 4,
+        name: "Rarible Lazy Mint",
+        verifyingContract: contractAddress,
+        version: "1",
       },
       message: {
-        contents: 'Hello, Bob!',
-        from: {
-          name: 'Cow',
-          wallets: [
-            '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
-            '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
-          ],
-        },
-        to: [
+        "@type": "ERC721",
+        contract: contractAddress,
+        tokenId: tokenID,
+        " uri": ipfsHash,
+        creators: [
           {
-            name: 'Bob',
-            wallets: [
-              '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-              '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
-              '0xB0B0b0b0b0b0B000000000000000000000000000',
-            ],
+            account: walletAddress,
+            value: "10000",
+          },
+        ],
+        royalties: [
+          {
+            account: walletAddress,
+            value: 2000,
           },
         ],
       },
-      primaryType: 'Mail',
-      types: {
-        EIP712Domain: [
-          { name: 'name', type: 'string' },
-          { name: 'version', type: 'string' },
-          { name: 'chainId', type: 'uint256' },
-          { name: 'verifyingContract', type: 'address' },
-        ],
-        Group: [
-          { name: 'name', type: 'string' },
-          { name: 'members', type: 'Person[]' },
-        ],
-        Mail: [
-          { name: 'from', type: 'Person' },
-          { name: 'to', type: 'Person[]' },
-          { name: 'contents', type: 'string' },
-        ],
-        Person: [
-          { name: 'name', type: 'string' },
-          { name: 'wallets', type: 'address[]' },
-        ],
-      },
-    };
+    });
+    return dataStruct;
+  }
+  signTypedDataV4.onclick = async () => {
+    // Get Rarible Token:
+    let msg = getRaribleTokenMsg();
+    const networkId = parseInt(networkDiv.innerHTML, 10);
+    const chainId = parseInt(chainIdDiv.innerHTML, 16) || networkId;
+    const msgParams = msg;
     try {
       const from = accounts[0];
       const sign = await ethereum.request({
@@ -899,56 +930,7 @@ const initialize = async () => {
   signTypedDataV4Verify.onclick = async () => {
     const networkId = parseInt(networkDiv.innerHTML, 10);
     const chainId = parseInt(chainIdDiv.innerHTML, 16) || networkId;
-    const msgParams = {
-      domain: {
-        chainId,
-        name: 'Ether Mail',
-        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-        version: '1',
-      },
-      message: {
-        contents: 'Hello, Bob!',
-        from: {
-          name: 'Cow',
-          wallets: [
-            '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
-            '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
-          ],
-        },
-        to: [
-          {
-            name: 'Bob',
-            wallets: [
-              '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-              '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
-              '0xB0B0b0b0b0b0B000000000000000000000000000',
-            ],
-          },
-        ],
-      },
-      primaryType: 'Mail',
-      types: {
-        EIP712Domain: [
-          { name: 'name', type: 'string' },
-          { name: 'version', type: 'string' },
-          { name: 'chainId', type: 'uint256' },
-          { name: 'verifyingContract', type: 'address' },
-        ],
-        Group: [
-          { name: 'name', type: 'string' },
-          { name: 'members', type: 'Person[]' },
-        ],
-        Mail: [
-          { name: 'from', type: 'Person' },
-          { name: 'to', type: 'Person[]' },
-          { name: 'contents', type: 'string' },
-        ],
-        Person: [
-          { name: 'name', type: 'string' },
-          { name: 'wallets', type: 'address[]' },
-        ],
-      },
-    };
+    const msgParams = getRaribleTokenMsg();
     try {
       const from = accounts[0];
       const sign = signTypedDataV4Result.innerHTML;
