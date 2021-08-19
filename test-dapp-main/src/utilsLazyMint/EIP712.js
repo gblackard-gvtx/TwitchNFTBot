@@ -30,7 +30,9 @@ module.exports = {
   },
 
   signTypedData: async function (provider, from, data) {
+    console.log('tommy data to compare 3')
     const msgData = JSON.stringify(data);
+    console.log(msgData);
     let sig = await provider.send("eth_signTypedData_v4", [from, msgData]);
     console.log('sig is');
     console.log(sig);

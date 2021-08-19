@@ -826,6 +826,8 @@ const initialize = async () => {
     }
   };
   async function putLazyMint(form) {
+    console.log('compare put to lazy mint');
+    console.log(JSON.stringify(form));
     const raribleMintUrl = "https://api-dev.rarible.com/protocol/v0.1/ethereum/nft/mints"
     const raribleMintResult = await fetch(raribleMintUrl, {
       method: "POST",
@@ -860,7 +862,7 @@ return response.json();
    * Sign Typed Data V4
    */
   let verefiableTokenId  = ''
-  const walletAddress = "0x985a1a1a76de1a98878e00f36da673c5b1c9b25e";
+  const walletAddress = "0x985A1A1A76dE1A98878e00F36Da673C5b1c9b25e";
    async function getRaribleTokenMsg(verefiableTokenIdTwo){
     let ipfsHash = "/ipfs/bafybeigpgh7aty2amsiaj24jgpvn7nhp6nnqijtpcvj5tvdre6iyamvtla";
     let contractAddress = '0xB0EA149212Eb707a1E5FC1D2d3fD318a8d94cf05';
@@ -917,7 +919,7 @@ return response.json();
     };
     const dataStructSimple= {
       '@type': 'ERC721',
-      'contract': '0x6ede7f3c26975aad32a475e1021d8f6f39c89d82',
+      'contract': contractAddress,
       'tokenId': tokenID,
       'uri': ipfsHash,
       'creators': [
@@ -941,6 +943,8 @@ return response.json();
     const networkId = parseInt(networkDiv.innerHTML, 10);
     const chainId = parseInt(chainIdDiv.innerHTML, 16) || networkId;
     const msgParams = msg;
+    console.log('data passed compare here');
+    console.log(JSON.stringify(msgParams));
     console.log(msgParams);
     console.log(accounts[0]);
     try {
@@ -955,9 +959,9 @@ return response.json();
       console.log(sign);
       signTypedDataV4Result.innerHTML = sign;
       signTypedDataV4Verify.disabled = false;
-      console.log(dataTwo);
+      console.log('Data passed to sig to be compared');
       dataTwo['signatures'] = [sign];
-      console.log(dataTwo);
+      console.log(JSON.stringify(dataTwo));
       let results = await putLazyMint(dataTwo);
         console.log(results);
       
