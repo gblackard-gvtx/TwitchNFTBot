@@ -1,5 +1,5 @@
 # TwitchNFTBot
-Originally followed along with [How I created a !clip command that automatically created a Twitch clip and posted it to my Discord (using AWS Lambdas)](https://www.specialagentsqueaky.com/blog-post/8gkvc50n/2020-06-17-how-i-created-clip-command-for-twitch-clips/#step-2-registering-a-twitch-application) before writing my own documentation, as not everything is his article is needed. 
+To give credit to were credit is dueI used following documentation as a jumping off point for the twitch APIs [creating a !clip command](https://www.specialagentsqueaky.com/blog-post/8gkvc50n/2020-06-17-how-i-created-clip-command-for-twitch-clips/#step-2-registering-a-twitch-application) before writing my own documentation, as not everything is his article is needed. 
 
 -----------------------------------------------------------------------------------------------------------------------------------
 __Step 1: Registering a Twitch application__
@@ -48,6 +48,10 @@ This request returns the following Json response.
 }
 ```
 Save this refresh token for later.
+__Please Note:__
+Learn from my repeat mistakes and only run this GET request one time to get the refresh token. If you run this again it will for you to repeat the steps of getting the Authirization Code.
+Once you have the Refresh code you will use the following request to refresh you access token from now on.
+
 
 
 __Step 4: Get BroadcasterID__
@@ -80,7 +84,13 @@ This request returns the following Json response.
   ]
 }
 ```
-We want the id from this json object
+We want the id from this json object.
+At this point and time you should have the following variables.
+* ClientId
+* Secret
+* Authirization Code
+* Refresh Token
+* BroadcastId
 
  
 
