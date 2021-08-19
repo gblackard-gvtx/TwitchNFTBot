@@ -54,4 +54,3 @@ def mint_and_upload_clip(slug):
     return ipfs_of_metadata
 
 
-mint_and_upload_clip('fnjdsjdsf')
