@@ -48,9 +48,14 @@ This request returns the following Json response.
 }
 ```
 Save this refresh token for later.
+
 __Please Note:__
-Learn from my repeat mistakes and only run this GET request one time to get the refresh token. If you run this again it will for you to repeat the steps of getting the Authirization Code.
+Learn from my repeat mistakes and only run this GET request one time to get the refresh token. If you run this again it will force you to repeat the steps of getting the Authirization Code.
 Once you have the Refresh code you will use the following request to refresh you access token from now on.
+```
+curl --request POST \
+  --url 'https://id.twitch.tv/oauth2/token?grant_type=refresh_token&refresh_token=###REFRESHTOKEN###&client_id=###CLIENTID###&client_secret=###SECRET###' \
+```
 
 
 
@@ -84,13 +89,18 @@ This request returns the following Json response.
   ]
 }
 ```
-We want the id from this json object.
+We want the id and the login from this json object.
 At this point and time you should have the following variables.
 * ClientId
 * Secret
 * Authirization Code
 * Refresh Token
 * BroadcastId
+* Login
+
+# Twitch chatbot setup
+
+
 
  
 
