@@ -1,4 +1,6 @@
 import MetaMaskOnboarding from '@metamask/onboarding';
+const EIP712 = require("./utilsLazyMint/EIP712");
+
 // eslint-disable-next-line camelcase
 import {
   encrypt,
@@ -823,28 +825,53 @@ const initialize = async () => {
       signTypedDataV3VerifyResult.innerHTML = `Error: ${err.message}`;
     }
   };
-
+  async function putLazyMint(form) {
+    const raribleMintUrl = "https://api-dev.rarible.com/protocol/v0.1/ethereum/nft/mints"
+    const raribleMintResult = await fetch(raribleMintUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    }).then(function(response){
+return response.json();
+    }).then(function(data) {
+      console.log('The response was');
+      // `data` is the parsed version of the JSON returned from the above endpoint.
+      console.log(data);  // { "userId": 1, "id": 1, "title": "...", "body": "..." }
+    });
+    
+    console.log({raribleMintResult})
+  }
+   async function generateTokenId(contract, minter) {
+    console.log("generating tokenId for", contract, minter)
+    const raribleTokenIdUrl = `https://api-dev.rarible.com/protocol/v0.1/ethereum/nft/collections/${contract}/generate_token_id?minter=${minter}`;
+    const res = await fetch(raribleTokenIdUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const resJson = await res.json();
+    console.log({resJson})
+    return resJson.tokenId
+  }
   /**
    * Sign Typed Data V4
    */
-   async function getRaribleTokenMsg(){
+  let verefiableTokenId  = ''
+  const walletAddress = "0x985a1a1a76de1a98878e00f36da673c5b1c9b25e";
+   async function getRaribleTokenMsg(verefiableTokenIdTwo){
     let ipfsHash = "/ipfs/bafybeigpgh7aty2amsiaj24jgpvn7nhp6nnqijtpcvj5tvdre6iyamvtla";
-    const walletAddress = "0x985a1a1a76de1a98878e00f36da673c5b1c9b25e";
-
-    let tokenURL =
-    "https://api-staging.rarible.com/protocol/v0.1/ethereum/nft/collections/" +
-    '0x6ede7f3c26975aad32a475e1021d8f6f39c89d82' +
-    "/generate_token_id?minter=" +
-    walletAddress;
-  let tokenID = '';
-    try {
-      const response = await axios.get(tokenURL);
-      tokenID = response.data.tokenId;
-    } catch (error) {
-      console.error(error);
+    let contractAddress = '0xB0EA149212Eb707a1E5FC1D2d3fD318a8d94cf05';
+  
+    let tokenID= verefiableTokenIdTwo;
+    if( tokenID==undefined||tokenID==''){ 
+      tokenID=await generateTokenId(contractAddress,walletAddress);
+      verefiableTokenId=tokenID;
+      console.log(verefiableTokenId);
     }
     console.log(tokenID);
-  
     const dataStruct = {
       types: {
         EIP712Domain: [
@@ -853,29 +880,28 @@ const initialize = async () => {
           { name: 'chainId', type: 'uint256' },
           { name: 'verifyingContract', type: 'address' },
         ],
-        "Mint721": [
+        Mint721: [
           { name: "tokenId", type: "uint256" },
           { name: "tokenURI", type: "string" },
           { name: "creators", type: "Part[]" },
           { name: "royalties", type: "Part[]" }
       ],
-      "Part": [
+      Part: [
           { name: "account", type: "address" },
           { name: "value", type: "uint96" }
       ],
       },
       domain: {
-        chainId: 4,
-        name: 'Rarible Lazy Mint',
-        verifyingContract: '0x6ede7f3c26975aad32a475e1021d8f6f39c89d82',
+        chainId: 3,
+        name: 'Mint721',
+        verifyingContract: contractAddress,
         version: '1',
       },
       primaryType: 'Mint721',
       message: {
         '@type': 'ERC721',
-        'contract': '0x6ede7f3c26975aad32a475e1021d8f6f39c89d82',
+        'contract': contractAddress,
         'tokenId': tokenID,
-        'tokenURI': ipfsHash,
         'uri': ipfsHash,
         'creators': [
           {
@@ -884,11 +910,9 @@ const initialize = async () => {
           },
         ],
         'royalties': [
-          {
-            account: walletAddress,
-            value: '1500',
-          },
+          
         ],
+        'tokenURI': ipfsHash,
       },
     };
     const dataStructSimple= {
@@ -903,13 +927,10 @@ const initialize = async () => {
         },
       ],
       'royalties': [
-        {
-          account: walletAddress,
-          value: '1500',
-        },
+
       ],
     };
-
+    console.log(dataStruct);
     return [dataStructSimple, dataStruct];
   }
   signTypedDataV4.onclick = async () => {
@@ -922,28 +943,22 @@ const initialize = async () => {
     const msgParams = msg;
     console.log(msgParams);
     console.log(accounts[0]);
-    const stringify = JSON.stringify(msgParams);
     try {
-      const from = accounts[0];
+      const account =walletAddress;
       console.log(ethereum);
-      const sign = await ethereum.request({
+      let sign = (await EIP712.signTypedData(ethereum, account, msgParams)).sig;
+
+      /*const sign = await ethereum.request({
         method: 'eth_signTypedData_v4',
         params: [from, stringify],
-      });
+      });*/
       console.log(sign);
       signTypedDataV4Result.innerHTML = sign;
       signTypedDataV4Verify.disabled = false;
       console.log(dataTwo);
       dataTwo['signatures'] = [sign];
       console.log(dataTwo);
-        let results = await axios.post('https://api-dev.rarible.com/protocol/v0.1/ethereum/nft/mints',dataTwo).catch(function (err){
-          if (err.response) {
-            console.log(err.response.data);
-            console.log(err.response.status);
-            console.log(err.response.headers);
-          }
-          console.error(err);
-        });
+      let results = await putLazyMint(dataTwo);
         console.log(results);
       
       
@@ -960,7 +975,11 @@ const initialize = async () => {
   signTypedDataV4Verify.onclick = async () => {
     const networkId = parseInt(networkDiv.innerHTML, 10);
     const chainId = parseInt(chainIdDiv.innerHTML, 16) || networkId;
-    const msgParams = getRaribleTokenMsg();
+    console.log('id is');
+    console.log(verefiableTokenId);
+    const msgParams = (await getRaribleTokenMsg(verefiableTokenId))[1];
+    console.log('result');
+    console.log(msgParams);
     try {
       const from = accounts[0];
       const sign = signTypedDataV4Result.innerHTML;

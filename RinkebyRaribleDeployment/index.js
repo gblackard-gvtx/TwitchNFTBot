@@ -105,31 +105,31 @@ const main = async () => {
       EIP712Domain: [
         {
           type: "string",
-          name: "name",
+          name: "name"
         },
         {
           type: "string",
-          name: "version",
+          name: "version"
         },
         {
           type: "uint256",
-          name: "chainId",
+          name: "chainId"
         },
         {
           type: "address",
-          name: "verifyingContract",
+          name: "verifyingContract"
         },
       ],
-      Mint721: [
-        { name: "tokenId", type: "uint256" },
-        { name: "tokenURI", type: "string" },
-        { name: "creators", type: "Part[]" },
-        { name: "royalties", type: "Part[]" },
-      ],
       Part: [
-        { name: "account", type: "address" },
-        { name: "value", type: "uint96" },
+        {name: 'account', type: 'address'},
+        {name: 'value', type: 'uint96'}
       ],
+      Mint721: [
+        {name: 'tokenId', type: 'uint256'},
+        {name: 'tokenURI', type: 'string'},
+        {name: 'creators', type: 'Part[]'},
+        {name: 'royalties', type: 'Part[]'}
+      ]
     },
     domain: {
       chainId: 4,
@@ -141,7 +141,7 @@ const main = async () => {
       "@type": "ERC721",
       contract: contractAddress,
       tokenId: tokenID,
-      " uri": ipfsHash,
+      "uri": ipfsHash,
       creators: [
         {
           account: walletAddress,
