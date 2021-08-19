@@ -864,7 +864,7 @@ const initialize = async () => {
   let verefiableTokenId = '';
   const walletAddress = "0x985A1A1A76dE1A98878e00F36Da673C5b1c9b25e";
   async function getRaribleTokenMsg(verefiableTokenIdTwo) {
-    let ipfsHash = "/ipfs/QmeGNdZvyc1A1ZCxNEWZYcJ51Dsem4GBnyvWjHYbYy6t2w";
+    let ipfsHash = "/ipfs/QmU5YYRRSKsfZtbXdgEUGX89Ej4xmdVPzGnNckbMtvFhez";
     let contractAddress = '0xB0EA149212Eb707a1E5FC1D2d3fD318a8d94cf05';
 
     let tokenID = verefiableTokenIdTwo;
