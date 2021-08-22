@@ -1,10 +1,10 @@
 # TwitchNFTBot
-To give credit to were credit is dueI used following documentation as a jumping off point for the twitch APIs [creating a !clip command](https://www.specialagentsqueaky.com/blog-post/8gkvc50n/2020-06-17-how-i-created-clip-command-for-twitch-clips/#step-2-registering-a-twitch-application) before writing my own documentation, as not everything is his article is needed. 
+To give credit to where credit is due, I used following documentation as a jumping off point for the twitch APIs [creating a !clip command](https://www.specialagentsqueaky.com/blog-post/8gkvc50n/2020-06-17-how-i-created-clip-command-for-twitch-clips/#step-2-registering-a-twitch-application) before writing my own documentation, as not everything is his article is needed. 
 
 -----------------------------------------------------------------------------------------------------------------------------------
 __Step 1: Registering a Twitch application__
 
-To be able to clip your steam programatically you must first register your app with Twitch.
+To be able to clip your steam programmatically you must first register your app with Twitch.
 * To register your app go to the [Developer Dashboard](https://dev.twitch.tv/login). Login and click "Register Your App"
 * Name your app based on the project. For the "OAuth Redirect URL" type in "http://localhost/". As discussed above this is very important step.
 * Select "Application Integration"
@@ -16,15 +16,15 @@ To be able to clip your steam programatically you must first register your app w
     
 __Step 2: Giving your application the rights to clip__
 
-* In your preffered browser paste in the following 
+* In your preferred browser paste in the following 
 ```
 https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=##CLIENT_ID##&redirect_uri=http://localhost/&scope=clips:edit
 ```
 * Make sure you replace the ##CLIENT_ID## with your application's "Client ID" from above.
 * You will be asked to authorize the your app. Click "Authorize".
 * Twitch will redirect us to "http://localhost/" - which probably will look like a broken page.
-* In the URL of the broken looking page copy the alphnumeric code between code= and &scope.
-* Save this code for late, and besure not to share it with anyone. This is the "Authorization Code" we were looking for.
+* In the URL of the broken looking page copy the alphanumeric code between code= and &scope.
+* Save this code for late, and be sure not to share it with anyone. This is the "Authorization Code" we were looking for.
     
     
     
@@ -50,7 +50,7 @@ This request returns the following Json response.
 Save this refresh token for later.
 
 __Please Note:__
-Learn from my repeat mistakes and only run this GET request one time to get the refresh token. If you run this again it will force you to repeat the steps of getting the Authirization Code.
+Learn from my repeat mistakes and only run this GET request one time to get the refresh token. If you run this again it will force you to repeat the steps of getting the Authorization Code.
 Once you have the Refresh code you will use the following request to refresh you access token from now on.
 ```
 curl --request POST \
@@ -93,14 +93,18 @@ We want the id and the login from this json object.
 At this point and time you should have the following variables.
 * ClientId
 * Secret
-* Authirization Code
+* Authorization Code
 * Refresh Token
 * BroadcastId
 * Login
 
 # Twitch chatbot setup
 
+__Twitch Oauth Token__
 
+You will need to get an Oauth token to allow your chatbot to communicate with the twitch server. You can Generate the token with the following link: [https://twitchapps.com/tmi/](https://twitchapps.com/tmi/) Make sure you are logged in to your chatbot account. The token will be an alphanumeric string.
 
- 
+From here you can follow the twitch documentation to build your chatbot
+[Getting Started with Chat & Chatbots](https://dev.twitch.tv/docs/irc).
 
+------------------------------------------------------------------------------------------------------------------------------------------------
