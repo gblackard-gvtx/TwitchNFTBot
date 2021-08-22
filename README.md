@@ -1,8 +1,8 @@
-# TwitchNFTBot
+# Clint Bot - Twitch
 To give credit to where credit is due, I used following documentation as a jumping off point for the twitch APIs [creating a !clip command](https://www.specialagentsqueaky.com/blog-post/8gkvc50n/2020-06-17-how-i-created-clip-command-for-twitch-clips/#step-2-registering-a-twitch-application) before writing my own documentation, as not everything is his article is needed. 
 
 -----------------------------------------------------------------------------------------------------------------------------------
-__Step 1: Registering a Twitch application__
+## Step 1: Registering a Twitch application
 
 To be able to clip your steam programmatically you must first register your app with Twitch.
 * To register your app go to the [Developer Dashboard](https://dev.twitch.tv/login). Login and click "Register Your App"
@@ -14,7 +14,7 @@ To be able to clip your steam programmatically you must first register your app 
     
     
     
-__Step 2: Giving your application the rights to clip__
+## Step 2: Giving your application the rights to clip
 
 * In your preferred browser paste in the following 
 ```
@@ -28,7 +28,7 @@ https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=##CLIENT_ID##
     
     
     
-__Step 3: Getting Refresh Token__
+## Step 3: Getting Refresh Token
 
 Twitch gives you an Access Token, but then requires a Refresh Token to update that Access Token.
 The easiest way to get the Refresh Token is to us a Post request either with Postman or Insomnia.
@@ -59,7 +59,7 @@ curl --request POST \
 
 
 
-__Step 4: Get BroadcasterID__
+## Step 4: Get BroadcasterID
 
 Next we need to get the broadcasterId from twitch.
 Just like last time we can us Postman or Insomnia. You can use the following CURL Command.
@@ -100,7 +100,7 @@ At this point and time you should have the following variables.
 
 # Twitch chatbot setup
 
-__Twitch Oauth Token__
+##  Twitch Oauth Token
 
 You will need to get an Oauth token to allow your chatbot to communicate with the twitch server. You can Generate the token with the following link: [https://twitchapps.com/tmi/](https://twitchapps.com/tmi/) Make sure you are logged in to your chatbot account. The token will be an alphanumeric string.
 
