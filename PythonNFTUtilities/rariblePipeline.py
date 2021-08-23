@@ -15,7 +15,7 @@ def create_clip_and_thumbnail():
     print(f'Clip Id: {clip_id}')
     if clip_id.startswith('Error: '):
         return clip_id
-    mint_and_upload_clip(clip_id)
+    return mint_and_upload_clip(clip_id)
 
 
 def create_thumbnail_and_get_ipfs(path_to_video):
@@ -55,5 +55,4 @@ def mint_and_upload_clip(slug):
     os.remove('thumbnail.jpeg')  # Comment out this line when testing
     ipfs_of_metadata = upload_raible_metadata(
         userName, title, video_ipfs_hash, thumbnail_ipfs_hash)
-    print(ipfs_of_metadata)
-    return ipfs_of_metadata
+    return [ipfs_of_metadata, video_ipfs_hash]
