@@ -336,7 +336,6 @@ const initialize = async () => {
         params: ['latest', false],
       });
 
-      handleEIP1559Support(block.baseFeePerGas !== undefined);
     } catch (err) {
       console.error(err);
     }
@@ -359,7 +358,6 @@ const initialize = async () => {
           params: ['latest', false],
         })
         .then((block) => {
-          handleEIP1559Support(block.baseFeePerGas !== undefined);
         });
     });
     ethereum.on('networkChanged', handleNewNetwork);
@@ -370,7 +368,6 @@ const initialize = async () => {
           params: ['latest', false],
         })
         .then((block) => {
-          handleEIP1559Support(block.baseFeePerGas !== undefined);
         });
       handleNewAccounts(newAccounts);
     });
@@ -403,3 +400,4 @@ function getPermissionsDisplayString(permissionsArray) {
 function stringifiableToHex(value) {
   return ethers.utils.hexlify(Buffer.from(JSON.stringify(value)));
 }
+
