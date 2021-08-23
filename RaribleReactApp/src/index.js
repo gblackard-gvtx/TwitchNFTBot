@@ -153,6 +153,7 @@ const initialize = async () => {
     console.log('compare put to lazy mint');
     console.log(JSON.stringify(form));
     const raribleMintUrl = "https://api-dev.rarible.com/protocol/v0.1/ethereum/nft/mints"
+    let returnable = [];
     const raribleMintResult = await fetch(raribleMintUrl, {
       method: "POST",
       headers: {
@@ -165,9 +166,11 @@ const initialize = async () => {
       console.log('The response was');
       // `data` is the parsed version of the JSON returned from the above endpoint.
       console.log(data);  // { "userId": 1, "id": 1, "title": "...", "body": "..." }
+      returnable = data;
     });
 
     console.log({ raribleMintResult })
+    return returnable;
   }
   async function generateTokenId(contract, minter) {
     console.log("generating tokenId for", contract, minter)
@@ -283,16 +286,14 @@ const initialize = async () => {
         params: [from, stringify],
       });*/
       console.log(sign);
-      signTypedDataV4Result.innerHTML = sign;
       signTypedDataV4Verify.disabled = false;
       console.log('Data passed to sig to be compared');
       dataTwo['signatures'] = [sign];
       console.log(JSON.stringify(dataTwo));
       let results = await putLazyMint(dataTwo);
+      console.log('look below');
       console.log(results);
-
-
-
+      signTypedDataV4Result.innerHTML = 'https://ropsten.rarible.com/token/0xB0EA149212Eb707a1E5FC1D2d3fD318a8d94cf05:' + results['tokenId'];
     } catch (err) {
       console.error(err);
       signTypedDataV4Result.innerHTML = `Error: ${err.message}`;
