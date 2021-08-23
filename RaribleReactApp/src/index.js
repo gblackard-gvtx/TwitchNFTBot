@@ -24,7 +24,8 @@ const accountsDiv = document.getElementById('accounts');
 
 // Basic Actions Section
 const onboardButton = document.getElementById('connectButton');
-
+const getAccountsButton = document.getElementById('getAccounts');
+const getAccountsResults = document.getElementById('getAccountsResult');
 const signTypedDataV4 = document.getElementById('signTypedDataV4');
 const signTypedDataV4Result = document.getElementById('signTypedDataV4Result');
 const signTypedDataV4Verify = document.getElementById('signTypedDataV4Verify');
@@ -60,6 +61,7 @@ const initialize = async () => {
 
   const onClickInstall = () => {
     onboardButton.innerText = 'Onboarding in progress';
+
     onboardButton.disabled = true;
     onboarding.startOnboarding();
   };
@@ -93,6 +95,7 @@ const initialize = async () => {
       switchEthereumChain.disabled = false;
     } else {
       onboardButton.innerText = 'Click here to install MetaMask!';
+      onboardButton.onclick = onClickInstall;
       onboardButton.disabled = false;
     }
 
@@ -104,11 +107,23 @@ const initialize = async () => {
       }
     } else {
       onboardButton.innerText = 'Connect';
+      onboardButton.onclick = onClickConnect;
       onboardButton.disabled = false;
     }
   };
 
-
+  getAccountsButton.onclick = async () => {
+    try {
+      const _accounts = await ethereum.request({
+        method: 'eth_accounts',
+      });
+      getAccountsResults.innerHTML =
+        _accounts[0] || 'Not able to get accounts';
+    } catch (err) {
+      console.error(err);
+      getAccountsResults.innerHTML = `Error: ${err.message}`;
+    }
+  };
 
   const initializeAccountButtons = () => {
     if (accountButtonsInitialized) {
