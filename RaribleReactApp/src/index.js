@@ -1,6 +1,20 @@
 import MetaMaskOnboarding from '@metamask/onboarding';
 const EIP712 = require("./utilsLazyMint/EIP712");
+const urlParams = new URLSearchParams(window.location.search);
+const metaIPFS = urlParams.get('metaIpfs');
+const videoIPFS = urlParams.get('videoIpfs');
+var video = document.getElementById('video');
+if (videoIPFS) {
+  var source = document.createElement('source');
 
+  source.setAttribute('src', 'https://gateway.pinata.cloud/ipfs/' + videoIPFS + '?filename=test.mp4');
+
+  video.appendChild(source);
+} else {
+  video.style.display = "none";
+}
+console.log('meta is' + metaIPFS);
+console.log('video is' + videoIPFS);
 // eslint-disable-next-line camelcase
 import {
   recoverTypedSignature_v4 as recoverTypedSignatureV4,
@@ -174,7 +188,9 @@ const initialize = async () => {
   let verefiableTokenId = '';
   const walletAddress = "0x985A1A1A76dE1A98878e00F36Da673C5b1c9b25e";
   async function getRaribleTokenMsg(verefiableTokenIdTwo) {
-    let ipfsHash = "/ipfs/QmU5YYRRSKsfZtbXdgEUGX89Ej4xmdVPzGnNckbMtvFhez";
+
+    let ipfsHash = "/ipfs/" + (metaIPFS ? metaIPFS : 'QmU5YYRRSKsfZtbXdgEUGX89Ej4xmdVPzGnNckbMtvFhez');
+    console.log('ipfs Hash being minted is ' + ipfsHash)
     let contractAddress = '0xB0EA149212Eb707a1E5FC1D2d3fD318a8d94cf05';
 
     let tokenID = verefiableTokenIdTwo;
