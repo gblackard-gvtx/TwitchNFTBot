@@ -8,7 +8,7 @@ const client = new tmi.Client({
 		username: process.env.BOT_USERNAME,
 		password: process.env.OAUTH_TOKEN
 	},
-	channels: ['nonfungbot']
+	channels: ['nonfungbot','tommybraccia']
 });
 
 client.connect();
