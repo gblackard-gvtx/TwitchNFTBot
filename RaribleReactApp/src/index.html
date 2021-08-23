@@ -1,0 +1,127 @@
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Clint</title>
+  <link rel="icon" type="image/svg" href="clint-transparent.png" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.14.1/css/mdb.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="index.css" type="text/css" />
+</head>
+
+<body>
+  <main class="container-fluid">
+    <header>
+      <div id="logo-container">
+        <img id="mm-logo" src="clint-transparent-cropped.png" />
+      </div>
+    </header>
+    <section>
+      <h3 class="card-title">
+        Status
+      </h3>
+
+      <div class="row">
+        <div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 col-12">
+          <p class="info-text alert alert-primary">
+            Network: <span id="network"></span>
+          </p>
+        </div>
+
+        <div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 col-12">
+          <p class="info-text alert alert-secondary">
+            ChainId: <span id="chainId"></span>
+          </p>
+        </div>
+
+        <div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 col-12">
+          <p class="info-text alert alert-success">
+            Accounts: <span id="accounts"></span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="row d-flex justify-content-center">
+        <div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 col-12">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">
+                Authenticate
+              </h4>
+
+              <button class="btn btn-primary btn-lg btn-block mb-3" id="connectButton" disabled>
+                Connect
+              </button>
+
+              <button class="btn btn-primary btn-lg btn-block mb-3" id="getAccounts">
+                eth_accounts
+              </button>
+
+              <p class="info-text alert alert-secondary">
+                eth_accounts result: <span id="getAccountsResult"></span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 col-12 d-flex align-items-stretch">
+          <div class="card full-width">
+            <div class="card-body">
+              <h4>
+                Lazy Mint The Clip
+              </h4>
+
+              <button class="btn btn-primary btn-lg btn-block mb-3" id="signTypedDataV4" disabled>
+                Lazy Mint
+              </button>
+
+              <p class="info-text alert alert-warning">
+                Result:
+                <span id="signTypedDataV4Result"></span>
+              </p>
+
+              <button class="btn btn-primary btn-lg btn-block mb-3" id="signTypedDataV4Verify" disabled>
+                Verify
+              </button>
+
+              <p class="info-text alert alert-warning">
+                Recovery result:
+                <span id="signTypedDataV4VerifyResult"></span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section>
+
+    </section>
+    <section class="d-none">
+      <div class="row d-flex justify-content-center">
+        <div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 col-12">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">
+                Ethereum Chain Interactions
+              </h4>
+              <button class="btn btn-primary btn-lg btn-block mb-3" id="addEthereumChain" disabled>
+                Add xDAI Chain
+              </button>
+              <button class="btn btn-primary btn-lg btn-block mb-3" id="switchEthereumChain" disabled>
+                Switch to xDAI Chain
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="bundle.js" defer></script>
+</body>
+
+</html>
