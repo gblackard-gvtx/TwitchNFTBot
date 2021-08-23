@@ -12,6 +12,7 @@ section {
 
 .card {
   margin-bottom: 20px;
+  height:100%;
 }
 
 /* Logo & Header */
@@ -44,3 +45,4 @@ header {
 #encryptMessageInput {
   margin-bottom: 1rem;
 }
+
