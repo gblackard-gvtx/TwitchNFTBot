@@ -32,7 +32,7 @@ def get_clip(clip_id):
     if response.status_code == 200:
         json = response.json()
         print(json)
-        userName = json['data'][0]['creator_name']
+        userName = json['data'][0]['broadcaster_name']
         title = json['data'][0]['title']
     else:
         print(f'The following error has occurred: {response}')
