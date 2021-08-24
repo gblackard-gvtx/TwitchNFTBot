@@ -71,40 +71,30 @@ def write_metadata(token_ids, nft_contract):
                 imageURL+"?filename=video.mp4"
             with open(metadata_file_name, "w") as file:
                 json.dump(collectible_metadata, file)
-            path = write_json_file(collectible_metadata)
-            hash_created = pinMetadata(path)
-            
+            hash_created = pinMetadata(collectible_metadata)
             print(hash_created)
             return hash_created
 # Stolen from https://github.com/Vourhey/pinatapy/blob/master/pinatapy/__init__.py
 
 
-def write_json_file(json_to_pin):
-    path = 'temp.json'
-    with open(path, 'w') as outfile:
-        json.dump(json_to_pin, outfile)
-    return path
+def pinMetadata(json_to_pin, options=None):
+    url_suffix = "pinning/pinJSONToIPFS"
+    h = {'pinata_api_key': os.environ.get('PINATA_API_KEY'),
+         'pinata_secret_api_key': os.environ.get('PINATA_API_SECRET')}
+    h["Content-Type"] = "application/json"
+    body = {
+        "pinataContent": json_to_pin
+    }
 
-
-def pinMetadata(path_to_file, options=None):
-    url = 'https://api.nft.storage/upload'
-    h = {'Authorization': 'Bearer ' + os.environ.get('NFT_STORE_API_KEY'),
-         'Content-Type': 'application/json'}
-
-    if type(path_to_file) is str:
-        path_to_file = Path(path_to_file)
-    if path_to_file.is_dir():
-        files = [("file", (file.as_posix(), open(file, "rb")))
-                 for file in path_to_file.glob('**/*') if not file.is_dir()]
-    else:
-        with open(path_to_file, 'rb') as f:
-            data = f.read()
-        files = data
-    res = requests.post(url, data=files, headers=h)
-
+    if options is not None:
+        if "pinataMetadata" in options:
+            body["pinataMetadata"] = options["pinataMetadata"]
+        if "pinataOptions" in options:
+            body["pinataOptions"] = options["pinataOptions"]
+   
+    res = requests.post("https://api.pinata.cloud/" +
+                            url_suffix, json=body, headers=h)
     if res.status_code == 200:
-        print(res.json())
-        return res.json()['value']['cid']
-    if res.json()['ok'] == False:
-        print('We have encountered a error:' + res.json()['error']['message'])
+        return res.json()['IpfsHash']
     return res
+
