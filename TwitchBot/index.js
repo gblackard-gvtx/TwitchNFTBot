@@ -27,7 +27,7 @@ client.on('message', (channel, tags, message, self) => {
 
 		const AWSEndpointCall = async () => {
 			const response = await fetch('http://ec2-18-221-33-66.us-east-2.compute.amazonaws.com:8080/');
-		}
+		
 			response.text().then(function (text) {
 				client.say(channel, `@${tags.username}, lazy mint a Rarible token at ${text}`);
 			})
