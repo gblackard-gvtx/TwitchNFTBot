@@ -8,8 +8,7 @@ app = Flask(__name__)
 @app.route("/")
 def create_rarible_nft():
     print('Calling Rarible create')
-    hashes = create_clip_and_thumbnail()
-    return f'http://localhost:9011/?metaIpfs={hashes[0]}&videoIpfs={hashes[1]}'
+    return create_clip_and_thumbnail()
 
 
 if __name__ == "__main__":

@@ -14,6 +14,7 @@ def create_clip_and_thumbnail():
     clip_id = create_clip()
     print(f'Clip Id: {clip_id}')
     if clip_id.startswith('Error: '):
+        print(clip_id)
         return clip_id
     return mint_and_upload_clip(clip_id)
 
@@ -21,14 +22,10 @@ def create_clip_and_thumbnail():
 def create_thumbnail_and_get_ipfs(path_to_video):
     image_file_name = 'thumbnail.jpeg'
     vidcap = cv.VideoCapture(path_to_video)
-
     vidcap.set(cv.CAP_PROP_POS_MSEC, 5000)
-
     success, image = vidcap.read()
-
     # save image to temp file
     cv.imwrite(image_file_name, image)
-
     vidcap.release()
     return pin_file_to_ipfs(image_file_name)
 
@@ -55,4 +52,5 @@ def mint_and_upload_clip(slug):
     os.remove('thumbnail.jpeg')  # Comment out this line when testing
     ipfs_of_metadata = upload_raible_metadata(
         userName, title, video_ipfs_hash, thumbnail_ipfs_hash)
-    return [ipfs_of_metadata, video_ipfs_hash]
+    return f'http://localhost:9011/?metaIpfs={ipfs_of_metadata}&videoIpfs={video_ipfs_hash}'
+
