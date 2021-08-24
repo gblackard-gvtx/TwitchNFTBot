@@ -138,3 +138,5 @@ metadata/rinkeby
 scripts/advanced_collectible/hash.txt
 scripts/advanced_collectible/meta.txt
 *.mp4
+
+nohup.out

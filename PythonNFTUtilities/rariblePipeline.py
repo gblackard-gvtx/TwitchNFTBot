@@ -9,9 +9,8 @@ from scripts.advanced_collectible.create_nft_from_twitch import pin_file_to_ipfs
 from scripts.advanced_collectible.create_clip import create_clip
 import cv2 as cv
 
+
 # The main method for the Rarible Pipeline
-
-
 def create_clip_and_thumbnail():
     # Calls the API to clip the last 30 seconds of stream and then gets the slug of the stream
     clip_id = create_clip()
