@@ -10,18 +10,6 @@ from scripts.advanced_collectible.create_clip import create_clip
 import cv2 as cv
 
 
-# The main method for the Rarible Pipeline
-def create_clip_and_thumbnail():
-    # Calls the API to clip the last 30 seconds of stream and then gets the slug of the stream
-    clip_id = create_clip()
-    print(f'Clip Id: {clip_id}')
-    if clip_id.startswith('Error: '):
-        print(clip_id)
-        return clip_id
-    # The below method pin the video, gets a thumbnail from the video, downloads the video, pins the metadata, and returns the nessecary url
-    return pin_files_and_get_url(clip_id)
-
-
 def create_thumbnail_and_get_ipfs(path_to_video):
     image_file_name = 'thumbnail.jpeg'
     vidcap = cv.VideoCapture(path_to_video)
@@ -58,3 +46,15 @@ def pin_files_and_get_url(slug):
     ipfs_of_metadata = upload_raible_metadata(
         userName, title, video_ipfs_hash, thumbnail_ipfs_hash)
     return f'http://localhost:9011/?metaIpfs={ipfs_of_metadata}&videoIpfs={video_ipfs_hash}'
+
+
+# The main method for the Rarible Pipeline
+def create_clip_and_thumbnail():
+    # Calls the API to clip the last 30 seconds of stream and then gets the slug of the stream
+    clip_id = create_clip()
+    print(f'Clip Id: {clip_id}')
+    if clip_id.startswith('Error: '):
+        print(clip_id)
+        return clip_id
+    # The below method pin the video, gets a thumbnail from the video, downloads the video, pins the metadata, and returns the nessecary url
+    return pin_files_and_get_url(clip_id)
