@@ -1,1 +1,5 @@
-eth-brownie>=1.10.0,<2.0.0
+Flask==1.1.2
+Flask-Cors==3.0.9
+opencv-python==4.5.3.56
+python-dotenv==0.16.0
+youtube-dl==2021.6.6

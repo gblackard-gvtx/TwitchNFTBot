@@ -42,10 +42,7 @@ const getAccountsButton = document.getElementById('getAccounts');
 const getAccountsResults = document.getElementById('getAccountsResult');
 const signTypedDataV4 = document.getElementById('signTypedDataV4');
 const signTypedDataV4Result = document.getElementById('signTypedDataV4Result');
-const signTypedDataV4Verify = document.getElementById('signTypedDataV4Verify');
-const signTypedDataV4VerifyResult = document.getElementById(
-  'signTypedDataV4VerifyResult',
-);
+
 
 // Miscellaneous
 const addEthereumChain = document.getElementById('addEthereumChain');
@@ -69,7 +66,7 @@ const initialize = async () => {
   let accounts;
   let accountButtonsInitialized = false;
 
-  const accountButtons = [signTypedDataV4, signTypedDataV4Verify];
+  const accountButtons = [signTypedDataV4];
 
   const isMetaMaskConnected = () => accounts && accounts.length > 0;
 
@@ -286,7 +283,6 @@ const initialize = async () => {
         params: [from, stringify],
       });*/
       console.log(sign);
-      signTypedDataV4Verify.disabled = false;
       console.log('Data passed to sig to be compared');
       dataTwo['signatures'] = [sign];
       console.log(JSON.stringify(dataTwo));
@@ -303,34 +299,7 @@ const initialize = async () => {
   /**
    *  Sign Typed Data V4 Verification
    */
-  signTypedDataV4Verify.onclick = async () => {
-    const networkId = parseInt(networkDiv.innerHTML, 10);
-    const chainId = parseInt(chainIdDiv.innerHTML, 16) || networkId;
-    console.log('id is');
-    console.log(verefiableTokenId);
-    const msgParams = (await getRaribleTokenMsg(verefiableTokenId))[1];
-    console.log('result');
-    console.log(msgParams);
-    try {
-      const from = accounts[0];
-      const sign = signTypedDataV4Result.innerHTML;
-      const recoveredAddr = recoverTypedSignatureV4({
-        data: msgParams,
-        sig: sign,
-      });
-      if (toChecksumAddress(recoveredAddr) === toChecksumAddress(from)) {
-        console.log(`Successfully verified signer as ${recoveredAddr}`);
-        signTypedDataV4VerifyResult.innerHTML = recoveredAddr;
-      } else {
-        console.log(
-          `Failed to verify signer when comparing ${recoveredAddr} to ${from}`,
-        );
-      }
-    } catch (err) {
-      console.error(err);
-      signTypedDataV4VerifyResult.innerHTML = `Error: ${err.message}`;
-    }
-  };
+
 
   function handleNewAccounts(newAccounts) {
     accounts = newAccounts;

@@ -61,6 +61,3 @@ def create_clip_and_pin():
     path_to_thumbnail = create_thumbnail(path_to_clip)
     # The below method pin the video, gets a thumbnail from the video, pins the metadata, and returns the nessecary url
     return pin_files_and_get_url(user_name, title, path_to_clip, path_to_thumbnail)
-
-
-print(create_clip_and_pin())
