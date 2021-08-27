@@ -1,19 +1,17 @@
 import requests
 from pathlib import Path
-import sys
 import os
-import subprocess
 
 from dotenv import load_dotenv
 
 load_dotenv()
- 
 
-def pin_nft_to_nftstore(path_to_file):
+
+def pin_nft_to_nftstore(path_to_file, content_type):
     print(path_to_file)
-    url ='https://api.nft.storage/upload'
-    h = {'Authorization': 'Bearer ' + os.environ.get('NFT_STORE_API_KEY'), 
-        'Content-Type':'video'}
+    url = 'https://api.nft.storage/upload'
+    h = {'Authorization': 'Bearer ' + os.environ.get('NFT_STORE_API_KEY'),
+         'Content-Type': content_type}
     if type(path_to_file) is str:
         path_to_file = Path(path_to_file)
     if path_to_file.is_dir():
@@ -32,4 +30,3 @@ def pin_nft_to_nftstore(path_to_file):
         print(res.json())
         print('We have encountered a error:' + res.json()['error']['message'])
     return res
-
