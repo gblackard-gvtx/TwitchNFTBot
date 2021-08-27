@@ -20,7 +20,7 @@ def create_thumbnail(path_to_video):
 
 
 def get_clip_info(slug):
-    time.sleep(10)
+    time.sleep(15)
     # Sample user_name and title used when testing without streaming.
     user_name = 'testName'
     title = 'testTitle'
@@ -46,7 +46,7 @@ def pin_files_and_get_url(user_name, title, path_to_clip, path_to_thumbnail):
 
 
 # The main method for the Rarible Pipeline
-def create_clip_and_thumbnail():
+def create_clip_and_pin():
     # Calls the API to clip the last 30 seconds of stream and then gets the slug of the stream
     clip_id = create_clip()
     print(f'Clip Id: {clip_id}')
@@ -54,7 +54,13 @@ def create_clip_and_thumbnail():
         print(clip_id)
         return clip_id
     user_name, title = get_clip_info(clip_id)
+    if user_name == 'Something went wrong on Twitch\'s end. Sorry!':
+        # This means data was empty due to clip failing.
+        return user_name
     path_to_clip = download_twitch_clip(clip_id)
     path_to_thumbnail = create_thumbnail(path_to_clip)
     # The below method pin the video, gets a thumbnail from the video, pins the metadata, and returns the nessecary url
     return pin_files_and_get_url(user_name, title, path_to_clip, path_to_thumbnail)
+
+
+print(create_clip_and_pin())

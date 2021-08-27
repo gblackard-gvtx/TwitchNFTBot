@@ -1,5 +1,5 @@
 from flask import Flask
-from rariblePipeline import create_clip_and_thumbnail
+from rariblePipeline import create_clip_and_pin
 
 app = Flask(__name__)
 
@@ -7,7 +7,7 @@ app = Flask(__name__)
 @app.route("/")
 def create_rarible_nft():
     print('Calling Rarible create')
-    return create_clip_and_thumbnail()
+    return create_clip_and_pin()
 
 
 if __name__ == "__main__":
