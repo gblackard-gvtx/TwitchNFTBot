@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def pin_nft_to_nftstore(path_to_file, content_type):
+def pin_file_to_nftstorage(path_to_file, content_type):
     print(path_to_file)
     url = 'https://api.nft.storage/upload'
     h = {'Authorization': 'Bearer ' + os.environ.get('NFT_STORE_API_KEY'),
