@@ -1,6 +1,20 @@
 import MetaMaskOnboarding from '@metamask/onboarding';
 const EIP712 = require("./utilsLazyMint/EIP712");
+const urlParams = new URLSearchParams(window.location.search);
+const metaIPFS = urlParams.get('metaIpfs');
+const videoIPFS = urlParams.get('videoIpfs');
+var video = document.getElementById('video');
+if (videoIPFS) {
+  var source = document.createElement('source');
 
+  source.setAttribute('src', 'https://gateway.pinata.cloud/ipfs/' + videoIPFS + '?filename=test.mp4');
+
+  video.appendChild(source);
+} else {
+  video.style.display = "none";
+}
+console.log('meta is' + metaIPFS);
+console.log('video is' + videoIPFS);
 // eslint-disable-next-line camelcase
 import {
   recoverTypedSignature_v4 as recoverTypedSignatureV4,
@@ -28,10 +42,7 @@ const getAccountsButton = document.getElementById('getAccounts');
 const getAccountsResults = document.getElementById('getAccountsResult');
 const signTypedDataV4 = document.getElementById('signTypedDataV4');
 const signTypedDataV4Result = document.getElementById('signTypedDataV4Result');
-const signTypedDataV4Verify = document.getElementById('signTypedDataV4Verify');
-const signTypedDataV4VerifyResult = document.getElementById(
-  'signTypedDataV4VerifyResult',
-);
+
 
 // Miscellaneous
 const addEthereumChain = document.getElementById('addEthereumChain');
@@ -55,7 +66,7 @@ const initialize = async () => {
   let accounts;
   let accountButtonsInitialized = false;
 
-  const accountButtons = [signTypedDataV4, signTypedDataV4Verify];
+  const accountButtons = [signTypedDataV4];
 
   const isMetaMaskConnected = () => accounts && accounts.length > 0;
 
@@ -139,6 +150,7 @@ const initialize = async () => {
     console.log('compare put to lazy mint');
     console.log(JSON.stringify(form));
     const raribleMintUrl = "https://api-dev.rarible.com/protocol/v0.1/ethereum/nft/mints"
+    let returnable = [];
     const raribleMintResult = await fetch(raribleMintUrl, {
       method: "POST",
       headers: {
@@ -151,9 +163,11 @@ const initialize = async () => {
       console.log('The response was');
       // `data` is the parsed version of the JSON returned from the above endpoint.
       console.log(data);  // { "userId": 1, "id": 1, "title": "...", "body": "..." }
+      returnable = data;
     });
 
     console.log({ raribleMintResult })
+    return returnable;
   }
   async function generateTokenId(contract, minter) {
     console.log("generating tokenId for", contract, minter)
@@ -174,7 +188,9 @@ const initialize = async () => {
   let verefiableTokenId = '';
   const walletAddress = "0x985A1A1A76dE1A98878e00F36Da673C5b1c9b25e";
   async function getRaribleTokenMsg(verefiableTokenIdTwo) {
-    let ipfsHash = "/ipfs/QmU5YYRRSKsfZtbXdgEUGX89Ej4xmdVPzGnNckbMtvFhez";
+
+    let ipfsHash = "/ipfs/" + (metaIPFS ? metaIPFS : 'QmU5YYRRSKsfZtbXdgEUGX89Ej4xmdVPzGnNckbMtvFhez');
+    console.log('ipfs Hash being minted is ' + ipfsHash)
     let contractAddress = '0xB0EA149212Eb707a1E5FC1D2d3fD318a8d94cf05';
 
     let tokenID = verefiableTokenIdTwo;
@@ -267,16 +283,13 @@ const initialize = async () => {
         params: [from, stringify],
       });*/
       console.log(sign);
-      signTypedDataV4Result.innerHTML = sign;
-      signTypedDataV4Verify.disabled = false;
       console.log('Data passed to sig to be compared');
       dataTwo['signatures'] = [sign];
       console.log(JSON.stringify(dataTwo));
       let results = await putLazyMint(dataTwo);
+      console.log('look below');
       console.log(results);
-
-
-
+      signTypedDataV4Result.innerHTML = 'https://ropsten.rarible.com/token/0xB0EA149212Eb707a1E5FC1D2d3fD318a8d94cf05:' + results['tokenId'];
     } catch (err) {
       console.error(err);
       signTypedDataV4Result.innerHTML = `Error: ${err.message}`;
@@ -286,34 +299,7 @@ const initialize = async () => {
   /**
    *  Sign Typed Data V4 Verification
    */
-  signTypedDataV4Verify.onclick = async () => {
-    const networkId = parseInt(networkDiv.innerHTML, 10);
-    const chainId = parseInt(chainIdDiv.innerHTML, 16) || networkId;
-    console.log('id is');
-    console.log(verefiableTokenId);
-    const msgParams = (await getRaribleTokenMsg(verefiableTokenId))[1];
-    console.log('result');
-    console.log(msgParams);
-    try {
-      const from = accounts[0];
-      const sign = signTypedDataV4Result.innerHTML;
-      const recoveredAddr = recoverTypedSignatureV4({
-        data: msgParams,
-        sig: sign,
-      });
-      if (toChecksumAddress(recoveredAddr) === toChecksumAddress(from)) {
-        console.log(`Successfully verified signer as ${recoveredAddr}`);
-        signTypedDataV4VerifyResult.innerHTML = recoveredAddr;
-      } else {
-        console.log(
-          `Failed to verify signer when comparing ${recoveredAddr} to ${from}`,
-        );
-      }
-    } catch (err) {
-      console.error(err);
-      signTypedDataV4VerifyResult.innerHTML = `Error: ${err.message}`;
-    }
-  };
+
 
   function handleNewAccounts(newAccounts) {
     accounts = newAccounts;

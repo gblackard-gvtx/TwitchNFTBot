@@ -27,13 +27,17 @@ def getRefreshAccessToken():
 def get_clip(clip_id):
     gCQuery = {'id': clip_id}
     accessToken = getRefreshAccessToken()
+    print(f'The access token is: {accessToken}')
     headers = {'Authorization': 'Bearer ' + accessToken, 'Client-ID': CLIENT}
     response = requests.get(clipURL, params=gCQuery, headers=headers)
     if response.status_code == 200:
         json = response.json()
         print(json)
-        userName = json['data'][0]['creator_name']
-        title = json['data'][0]['title']
+        try:
+            userName = json['data'][0]['broadcaster_name']
+            title = json['data'][0]['title']
+        except:
+            return 'Something went wrong on Twitch\'s end. Sorry!', ''
     else:
         print(f'The following error has occurred: {response}')
     return userName, title

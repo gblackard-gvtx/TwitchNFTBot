@@ -8,7 +8,7 @@ const client = new tmi.Client({
 		username: process.env.BOT_USERNAME,
 		password: process.env.OAUTH_TOKEN
 	},
-	channels: ['nonfungbot','tommybraccia']
+	channels: ['nonfungbot', 'tommybraccia']
 });
 
 client.connect();
@@ -23,12 +23,13 @@ const CHANNEL_BROADCAST_ID = process.env.BROADCASTID;
 client.on('message', (channel, tags, message, self) => {
 	if (self) return;
 
-	if (message.toLocaleLowerCase() === '!clip.openseas') {
+	if (message.toLocaleLowerCase() === '!clip.rarible') {
 
 		const AWSEndpointCall = async () => {
-			const response = await fetch('http://ec2-18-221-33-66.us-east-2.compute.amazonaws.com:8080/');
+			const response = await fetch('http://localhost:8080/');
+
 			response.text().then(function (text) {
-				client.say(channel, `@${tags.username}, ${text}`);
+				client.say(channel, `@${tags.username}, lazy mint a Rarible token at ${text}`);
 			})
 
 		}

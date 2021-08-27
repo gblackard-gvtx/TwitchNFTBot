@@ -1,2 +1,2 @@
 # Twitch Bot for Minting Clips
-The Twitch bot uses the logic within Index.js to listen for the command to clip the last 30 seconds of the stream and mint it. It reaches out the AWS Endpoint hosted on an EC2 machine and awaits the response in the format of a string to send to the users that includes the URL of the NFT on OpenSeas.
+The Twitch bot uses the logic within Index.js to listen for the command to clip the last 30 seconds of the stream and mint it. It reaches out the AWS Endpoint hosted on an EC2 machine and awaits the response which will be a link to the React Front End Application where they can Lazy Mint the Clip to Rarible.

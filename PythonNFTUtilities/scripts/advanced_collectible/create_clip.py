@@ -19,6 +19,7 @@ cCQuery = {'broadcaster_id': BROADCASTID}
 def get_refresh_access_token():
     response = requests.post(authURL, params=rATQuery)
     json = response.json()
+    print(json)
     access_token = json['access_token']
     print(f'Access Token: {access_token}')
     return access_token
