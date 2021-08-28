@@ -6,6 +6,7 @@ The foundations for this code were based on the MetaMask Test Dapp
 - Install [Yarn v1](https://yarnpkg.com/en/docs/install)
 - Run `yarn setup` to install dependencies and run any requried post-install scripts
   - **Warning:** Do not use the `yarn` / `yarn install` command directly. Use `yarn setup` instead. The normal install command will skip required post-install scripts, leaving your development environment in an invalid state.
+  
 ## Running
 Run `npm run start` to run the front end
 
