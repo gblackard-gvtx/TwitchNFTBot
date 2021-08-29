@@ -1,6 +1,5 @@
 from flask import Flask
 from rariblePipeline import create_clip_and_pin
-
 app = Flask(__name__)
 
 

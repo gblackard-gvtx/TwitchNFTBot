@@ -3,7 +3,7 @@ import time
 from rarible.uploadRaribleMetadata import upload_raible_metadata
 from scripts.advanced_collectible.get_clip_info import get_clip
 from scripts.advanced_collectible.download_twitch_video import download_twitch_clip
-from scripts.advanced_collectible.create_nft_from_twitch import pin_file_to_ipfs
+from scripts.advanced_collectible.create_nft_from_twitch_nftstore import pin_file_to_nftstorage
 from scripts.advanced_collectible.create_clip import create_clip
 import cv2 as cv
 
@@ -32,8 +32,8 @@ def get_clip_info(slug):
 
 def pin_files_and_get_url(user_name, title, path_to_clip, path_to_thumbnail):
     # download the video locally using youtube dl and then pass that path below
-    video_ipfs_hash = pin_file_to_ipfs(path_to_clip)
-    thumbnail_ipfs_hash = pin_file_to_ipfs(path_to_thumbnail)
+    video_ipfs_hash = pin_file_to_nftstorage(path_to_clip, 'video')
+    thumbnail_ipfs_hash = pin_file_to_nftstorage(path_to_thumbnail, 'image')
     print("Ipfs Hash of the Video is: "+video_ipfs_hash)
     print("Ipfs Hash of the thumbnail is: "+thumbnail_ipfs_hash)
     # The following is used because youtube_dl doesn't overwrite files with the same name and they are no longer needed.
