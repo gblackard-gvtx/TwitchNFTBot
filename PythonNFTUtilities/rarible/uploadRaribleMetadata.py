@@ -1,7 +1,7 @@
+import os
+import requests
 from dotenv import load_dotenv
 import datetime
-import json
-from scripts.advanced_collectible.create_nft_from_twitch_nftstore import pin_file_to_nftstorage
 
 load_dotenv()
 
@@ -19,7 +19,30 @@ def upload_raible_metadata(streamer, stream_title, videoURL, imageURL):
     collectible_metadata["image"] = "https://ipfs.io/ipfs/" + \
         imageURL+"?filename=image.jpeg"
     collectible_metadata["attributes"] = []
-    with open('meta.json', 'w') as outfile:
-        json.dump(collectible_metadata, outfile)
-    hash = pin_file_to_nftstorage('meta.json', 'application/json')
-    return (hash)
+    logs = pinMetadata(collectible_metadata)
+    return (logs['IpfsHash'])
+
+
+def pinMetadata(json_to_pin, options=None):
+    url_suffix = "pinning/pinJSONToIPFS"
+    h = {'pinata_api_key': os.environ.get('PINATA_API_KEY'),
+         'pinata_secret_api_key': os.environ.get('PINATA_API_SECRET')}
+    h["Content-Type"] = "application/json"
+
+    body = {
+        "pinataContent": json_to_pin
+    }
+
+    if options is not None:
+        if "pinataMetadata" in options:
+            body["pinataMetadata"] = options["pinataMetadata"]
+        if "pinataOptions" in options:
+            body["pinataOptions"] = options["pinataOptions"]
+
+    res = requests.post("https://api.pinata.cloud/" +
+                        url_suffix, json=body, headers=h)
+
+    if res.status_code == 200:
+        return res.json()
+
+    return res
